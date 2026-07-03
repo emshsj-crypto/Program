@@ -1,0 +1,2313 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Sıkıcı Program</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sıkıcı Program">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<style>
+
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Bebas+Neue&display=swap');
+
+  :root {
+    --black: #0a0a0a;
+    --dark: #111111;
+    --card: #181818;
+    --border: #252525;
+    --white: #f0f0f0;
+    --dim: #888888;
+    --accent: #c8ff00;
+    --accent2: #ff4d00;
+    --red: #ff3333;
+    --green: #00ff88;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(160deg, #0a0a0a 0%, #111 50%, #0d0d0d 100%);
+    padding: 60px 20px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(200,255,0,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 12vw, 88px);
+    letter-spacing: 2px;
+    line-height: 0.95;
+    color: var(--white);
+  }
+  .hero-title span { color: var(--accent); }
+  .hero-sub {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--dim);
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* SCORE CARD */
+  .score-section {
+    padding: 32px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .score-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+  .score-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+  .score-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .score-number span {
+    font-size: 28px;
+    color: var(--dim);
+  }
+  .score-badge {
+    background: rgba(200,255,0,0.1);
+    border: 1px solid rgba(200,255,0,0.3);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+  }
+  .score-bars { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: flex; flex-direction: column; gap: 4px; }
+  .bar-meta { display: flex; justify-content: space-between; font-size: 12px; }
+  .bar-name { color: var(--dim); }
+  .bar-val { font-weight: 600; color: var(--white); }
+  .bar-track {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent);
+    transition: width 1s ease;
+  }
+  .bar-fill.orange { background: var(--accent2); }
+  .bar-fill.green { background: var(--green); }
+
+  .score-notes {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .note-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    font-size: 13px; color: var(--dim);
+  }
+  .note-icon { flex-shrink: 0; margin-top: 1px; }
+  .note-item.pos { color: #aaa; }
+  .note-item.pos .note-icon { color: var(--green); }
+  .note-item.neg .note-icon { color: var(--accent2); }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    padding: 14px 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--dim);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* TRAINING */
+  .training-section { padding: 24px 20px; }
+  .day-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .day-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .day-left { display: flex; align-items: center; gap: 12px; }
+  .day-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  .day-dot.rest { background: var(--dim); }
+  .day-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--white);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .day-muscle {
+    font-size: 11px;
+    color: var(--dim);
+    margin-top: 2px;
+  }
+  .day-tag {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .day-tag.push { background: rgba(200,255,0,0.12); color: var(--accent); }
+  .day-tag.pull { background: rgba(0,255,136,0.1); color: var(--green); }
+  .day-tag.legs { background: rgba(255,77,0,0.12); color: var(--accent2); }
+  .day-tag.rest-tag { background: rgba(136,136,136,0.1); color: var(--dim); }
+
+  .day-body {
+    padding: 0 20px 16px;
+    display: none;
+  }
+  .day-body.open { display: block; }
+  .exercise-row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .exercise-row:last-child { border-bottom: none; }
+  .ex-name { color: var(--white); font-weight: 500; }
+  .ex-note { font-size: 11px; color: var(--dim); margin-top: 2px; }
+  .ex-sets { color: var(--accent); font-weight: 700; font-size: 12px; text-align: right; }
+  .ex-reps { color: var(--dim); font-size: 11px; text-align: right; }
+
+  /* NUTRITION */
+  .nutrition-section { padding: 24px 20px; }
+  .macro-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .macro-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+  }
+  .macro-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    line-height: 1;
+    color: var(--accent);
+  }
+  .macro-val.orange { color: var(--accent2); }
+  .macro-val.green { color: var(--green); }
+  .macro-unit { font-size: 11px; color: var(--dim); }
+  .macro-name { font-size: 11px; font-weight: 700; color: var(--white); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .meal-list { display: flex; flex-direction: column; gap: 10px; }
+  .meal-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+  }
+  .meal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .meal-title-wrap { display: flex; align-items: center; gap: 8px; }
+  .meal-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--accent);
+  }
+  .meal-name { font-size: 13px; font-weight: 700; color: var(--white); }
+  .meal-time { font-size: 11px; color: var(--dim); }
+  .meal-kcal {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent2);
+    background: rgba(255,77,0,0.1);
+    padding: 3px 8px;
+    border-radius: 10px;
+  }
+  .meal-items { display: flex; flex-direction: column; gap: 6px; }
+  .meal-item { display: flex; justify-content: space-between; font-size: 12px; }
+  .meal-item-name { color: var(--dim); }
+  .meal-item-amount { color: var(--white); font-weight: 500; }
+
+  /* WEEKLY PLAN */
+  .weekly-section { padding: 24px 20px; }
+  .week-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .week-header {
+    padding: 16px 20px;
+    background: rgba(200,255,0,0.06);
+    border-bottom: 1px solid var(--border);
+  }
+  .week-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--accent);
+    letter-spacing: 1px;
+  }
+  .week-sub { font-size: 12px; color: var(--dim); margin-top: 2px; }
+  .week-rows { display: flex; flex-direction: column; }
+  .week-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+  }
+  .week-row:last-child { border-bottom: none; }
+  .week-day {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--dim);
+    width: 36px;
+    flex-shrink: 0;
+  }
+  .week-focus { flex: 1; font-size: 13px; font-weight: 600; color: var(--white); }
+  .week-focus small { display: block; font-size: 11px; font-weight: 400; color: var(--dim); margin-top: 2px; }
+  .week-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .badge-push { background: rgba(200,255,0,0.12); color: var(--accent); }
+  .badge-pull { background: rgba(0,255,136,0.1); color: var(--green); }
+  .badge-legs { background: rgba(255,77,0,0.12); color: var(--accent2); }
+  .badge-rest { background: rgba(136,136,136,0.1); color: var(--dim); }
+  .badge-cardio { background: rgba(100,100,255,0.12); color: #8899ff; }
+
+  .tip-card {
+    background: rgba(200,255,0,0.04);
+    border: 1px solid rgba(200,255,0,0.15);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+  .tip-header {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .tip-text { font-size: 13px; color: #aaa; line-height: 1.7; }
+
+  .chevron {
+    font-size: 12px;
+    color: var(--dim);
+    transition: transform 0.2s;
+  }
+  .day-header.open .chevron { transform: rotate(180deg); }
+
+  /* FOOTER */
+  .footer {
+    padding: 32px 20px;
+    border-top: 1px solid var(--border);
+    text-align: center;
+  }
+  .footer-text { font-size: 12px; color: var(--dim); line-height: 1.8; }
+  .footer-accent { color: var(--accent); font-weight: 600; }
+
+
+/* ============================================================
+   YENİ — Anatomik animasyon sistemi, modal, ilerleme takibi
+   ============================================================ */
+
+/* Exercise row artık tıklanabilir bir kart */
+.exercise-row {
+  cursor: pointer;
+  transition: background 0.15s;
+  border-radius: 8px;
+  padding: 10px 8px;
+  margin: 0 -8px;
+}
+.exercise-row:hover, .exercise-row:active { background: rgba(200,255,0,0.05); }
+.exercise-row.done { opacity: 0.55; }
+.exercise-row.done .ex-name { text-decoration: line-through; color: var(--dim); }
+
+.ex-row-main {
+  display: grid;
+  grid-template-columns: 36px 1fr auto auto;
+  gap: 10px;
+  align-items: center;
+}
+.ex-mini-icon {
+  width: 36px; height: 36px;
+  border-radius: 9px;
+  background: var(--dark);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+.ex-mini-icon svg { width: 30px; height: 30px; }
+.ex-check {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  color: transparent;
+  transition: all 0.15s;
+}
+.exercise-row.done .ex-check { background: var(--accent); border-color: var(--accent); color: #0a0a0a; }
+
+/* Day progress bar */
+.day-progress-wrap { padding: 0 0 14px; }
+.day-progress-track {
+  height: 5px; background: var(--border); border-radius: 3px; overflow: hidden;
+}
+.day-progress-fill {
+  height: 100%; background: var(--accent); border-radius: 3px;
+  transition: width 0.3s ease;
+}
+.day-progress-label {
+  font-size: 11px; color: var(--dim); margin-top: 6px;
+  display: flex; justify-content: space-between;
+}
+
+/* Today quick-jump banner */
+.today-banner {
+  background: linear-gradient(135deg, rgba(200,255,0,0.1), rgba(200,255,0,0.02));
+  border: 1px solid rgba(200,255,0,0.25);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin: 0 20px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+}
+.today-banner-left { display: flex; flex-direction: column; gap: 2px; }
+.today-banner-eyebrow { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+.today-banner-title { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--white); }
+.today-banner-sub { font-size: 11px; color: var(--dim); }
+.today-banner-arrow {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent); color: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0;
+}
+
+/* ===== MODAL ===== */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-sheet {
+  background: var(--dark);
+  border-top: 1px solid var(--border);
+  border-radius: 24px 24px 0 0;
+  width: 100%;
+  max-width: 480px;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 0 0 28px;
+  animation: slideUp 0.25s ease;
+}
+@keyframes slideUp { from { transform: translateY(40px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+
+.modal-handle {
+  width: 36px; height: 4px; background: var(--border);
+  border-radius: 2px; margin: 10px auto 6px;
+}
+.modal-close {
+  position: absolute; top: 14px; right: 16px;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--dim); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 5;
+}
+
+.modal-stage {
+  position: relative;
+  background: radial-gradient(circle at 50% 20%, #1c1c1c, #0d0d0d);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px 0 10px;
+}
+.modal-stage svg { width: 220px; height: auto; filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5)); }
+
+.phase-badge-row {
+  position: absolute; top: 16px; left: 16px;
+  display: flex; gap: 6px;
+}
+.phase-pill {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.5px;
+  padding: 5px 10px; border-radius: 20px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--dim); text-transform: uppercase;
+  transition: all 0.2s;
+}
+.phase-pill.active.ecc { background: rgba(255,77,0,0.15); border-color: var(--accent2); color: var(--accent2); }
+.phase-pill.active.con { background: rgba(200,255,0,0.15); border-color: var(--accent); color: var(--accent); }
+
+.speed-indicator {
+  position: absolute; top: 16px; right: 16px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 10px; color: var(--dim); font-weight: 600;
+}
+.speed-dots { display: flex; gap: 3px; }
+.speed-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); }
+.speed-dot.active { background: var(--accent); animation: pulse-dot 1s infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+.modal-body { padding: 18px 20px 0; }
+.modal-title-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+.modal-ex-name { font-family: 'Bebas Neue', sans-serif; font-size: 26px; color: var(--white); letter-spacing: 0.5px; line-height: 1.1; }
+.modal-ex-note { font-size: 12px; color: var(--dim); margin-top: 2px; }
+.modal-setsreps { text-align: right; flex-shrink: 0; }
+.modal-sets-val { color: var(--accent); font-weight: 700; font-size: 15px; }
+.modal-reps-val { color: var(--dim); font-size: 11px; }
+
+.muscle-tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 14px 0; }
+.muscle-tag {
+  font-size: 11px; font-weight: 600; padding: 5px 11px; border-radius: 20px;
+}
+.muscle-tag.primary { background: rgba(200,255,0,0.12); color: var(--accent); border: 1px solid rgba(200,255,0,0.3); }
+.muscle-tag.secondary { background: rgba(255,255,255,0.05); color: var(--dim); border: 1px solid var(--border); }
+
+.modal-section { margin-top: 16px; }
+.modal-section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.tempo-row { display: flex; gap: 8px; }
+.tempo-chip {
+  flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 6px; text-align: center;
+}
+.tempo-chip-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--accent); }
+.tempo-chip-label { font-size: 9px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+.cue-card {
+  background: rgba(200,255,0,0.05); border: 1px solid rgba(200,255,0,0.18);
+  border-radius: 12px; padding: 13px 14px; font-size: 13px; color: #ddd; line-height: 1.6;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.cue-icon { flex-shrink: 0; font-size: 15px; }
+
+.mistake-card {
+  background: rgba(255,77,0,0.06); border: 1px solid rgba(255,77,0,0.2);
+  border-radius: 12px; padding: 13px 14px; font-size: 13px; color: #e8b8a0; line-height: 1.6;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.mistake-icon { flex-shrink: 0; font-size: 15px; }
+
+.overload-card {
+  background: rgba(0,255,136,0.05); border: 1px solid rgba(0,255,136,0.18);
+  border-radius: 12px; padding: 13px 14px; font-size: 13px; color: #b8e8d4; line-height: 1.6;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.overload-icon { flex-shrink: 0; font-size: 15px; }
+
+.warmup-card {
+  background: rgba(255,77,0,0.08); border: 1px solid rgba(255,77,0,0.25);
+  border-radius: 12px; padding: 13px 14px; font-size: 13px; color: #ffcfa8; line-height: 1.6;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.warmup-icon { flex-shrink: 0; font-size: 15px; }
+
+.modal-set-tracker { margin-top: 18px; }
+.set-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.set-pill {
+  flex: 1; min-width: 50px;
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 0; text-align: center; font-size: 12px; font-weight: 700; color: var(--dim);
+  cursor: pointer; transition: all 0.15s; user-select: none;
+}
+.set-pill.complete { background: var(--accent); color: #0a0a0a; border-color: var(--accent); }
+
+.modal-done-btn {
+  margin-top: 18px; width: 100%; padding: 15px;
+  background: var(--accent); color: #0a0a0a; border: none; border-radius: 12px;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+  cursor: pointer;
+}
+.modal-done-btn.is-done { background: var(--card); color: var(--dim); border: 1px solid var(--border); }
+
+/* speed control buttons */
+.speed-ctrl { display:flex; gap:6px; margin-top:10px; }
+.speed-btn {
+  flex:1; padding:8px 0; text-align:center; border-radius:8px; font-size:11px; font-weight:700;
+  background:var(--card); border:1px solid var(--border); color:var(--dim); cursor:pointer;
+}
+.speed-btn.active { background:rgba(200,255,0,0.12); border-color:var(--accent); color:var(--accent); }
+
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-label">Kişisel Fizik Değerlendirmesi</div>
+  <div class="hero-title">DAVID<br><span>LAID</span><br>PROGRAMI</div>
+  <div class="hero-sub">Lean & aesthetic physique için özelleştirilmiş antrenman ve beslenme rehberi — anatomik hareket animasyonlarıyla</div>
+</div>
+
+<!-- SCORE -->
+<div class="score-section">
+  <div class="section-label">Fizik Değerlendirmesi</div>
+  <div class="score-card">
+    <div class="score-header">
+      <div>
+        <div class="score-number">6.5<span>/10</span></div>
+        <div style="font-size:12px;color:var(--dim);margin-top:4px;">Genel Puan</div>
+      </div>
+      <div class="score-badge">İyi Başlangıç</div>
+    </div>
+    <div class="score-bars">
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">Üst Vücut Kütlesi</span><span class="bar-val">7/10</span></div>
+        <div class="bar-track"><div class="bar-fill green" style="width:70%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">Yağ Oranı</span><span class="bar-val">6/10</span></div>
+        <div class="bar-track"><div class="bar-fill orange" style="width:60%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">Omuz Genişliği / V-Taper</span><span class="bar-val">6/10</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:60%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">Karın Tanımlılığı</span><span class="bar-val">5.5/10</span></div>
+        <div class="bar-track"><div class="bar-fill orange" style="width:55%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta"><span class="bar-name">Genel Simetri</span><span class="bar-val">7/10</span></div>
+        <div class="bar-track"><div class="bar-fill green" style="width:70%"></div></div>
+      </div>
+    </div>
+    <div class="score-notes">
+      <div class="note-item pos"><span class="note-icon">✓</span><span>Göğüs ve omuz kas gelişimi başlamış, iyi bir altyapı var</span></div>
+      <div class="note-item pos"><span class="note-icon">✓</span><span>Genel vücut çerçevesi ve kemik yapısı aesthetic physique için uygun</span></div>
+      <div class="note-item neg"><span class="note-icon">→</span><span>Yağ oranı hafif yüksek — abs görünürlüğü için %10-12'ye çekilmeli</span></div>
+      <div class="note-item neg"><span class="note-icon">→</span><span>Omuzlar ve sırt daha fazla geliştirilmeli (V-Taper için kritik)</span></div>
+      <div class="note-item neg"><span class="note-icon">→</span><span>Alt karın tanımlanması için yağ yakımı + core çalışması şart</span></div>
+      <div class="note-item neg"><span class="note-icon">→</span><span>Bu antrenman programı tek başına yağ oranını düşürmez — kalori açığı ve beslenme takibi (bkz. Beslenme sekmesi) olmadan hedeflenen sonuçlar gelmez</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- TODAY BANNER -->
+<div class="today-banner" id="todayBanner"></div>
+
+<!-- TABS -->
+<div class="tabs">
+  <button class="tab active" data-tab="training">Antrenman</button>
+  <button class="tab" data-tab="nutrition">Beslenme</button>
+  <button class="tab" data-tab="weekly">Haftalık Plan</button>
+</div>
+
+<!-- TRAINING TAB -->
+<div id="tab-training" class="tab-content active">
+  <div class="training-section">
+    <div class="section-label">6 Günlük PPL Programı — David Laid Tarzı · Cumartesi Aesthetic Finisher Entegre · Hareketlere dokunarak anatomik animasyonu görüntüle</div>
+    <div id="trainingDaysContainer"></div>
+  </div>
+</div>
+
+
+<div style="padding:0 20px 20px;">
+  <div class="tip-card">
+    <div class="tip-header">🔥 Cumartesi Finisher (Zorunlu)</div>
+    <div class="tip-text">
+      Legs B sonrası:<br>
+      • Lateral Raise 4x15-20<br>
+      • Face Pull 3x15-20<br>
+      • Hanging Leg Raise 3x12-15<br>
+      • İsteğe bağlı: Incline Walk 15 dk<br><br>
+      Amaç: Daha geniş omuz, daha belirgin V-Taper ve daha görünür karın.
+    </div>
+  </div>
+</div>
+<!-- NUTRITION TAB -->
+
+<div id="tab-nutrition" class="tab-content">
+  <div class="nutrition-section">
+    <div class="section-label">Günlük Makro Hedefleri (~75kg baz alınarak)</div>
+
+    <div class="macro-grid">
+      <div class="macro-card">
+        <div class="macro-val">2400</div>
+        <div class="macro-unit">kcal/gün</div>
+        <div class="macro-name">Kalori</div>
+      </div>
+      <div class="macro-card">
+        <div class="macro-val orange">185</div>
+        <div class="macro-unit">gram/gün</div>
+        <div class="macro-name">Protein</div>
+      </div>
+      <div class="macro-card">
+        <div class="macro-val green">240</div>
+        <div class="macro-unit">gram/gün</div>
+        <div class="macro-name">Karbonhidrat</div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:8px">5 Öğün Beslenme Planı</div>
+    <div class="meal-list">
+
+      <div class="meal-card">
+        <div class="meal-header">
+          <div class="meal-title-wrap">
+            <div class="meal-num">01</div>
+            <div>
+              <div class="meal-name">Sabah Öğünü</div>
+              <div class="meal-time">07:30 — Güç & Odak</div>
+            </div>
+          </div>
+          <div class="meal-kcal">~550 kcal</div>
+        </div>
+        <div class="meal-items">
+          <div class="meal-item"><span class="meal-item-name">Yulaf ezmesi</span><span class="meal-item-amount">80g</span></div>
+          <div class="meal-item"><span class="meal-item-name">Yumurta (bütün)</span><span class="meal-item-amount">3 adet</span></div>
+          <div class="meal-item"><span class="meal-item-name">Yumurta beyazı</span><span class="meal-item-amount">4 adet</span></div>
+          <div class="meal-item"><span class="meal-item-name">Muz</span><span class="meal-item-amount">1 adet</span></div>
+          <div class="meal-item"><span class="meal-item-name">Badem ezmesi</span><span class="meal-item-amount">1 yemek kaşığı</span></div>
+        </div>
+      </div>
+
+      <div class="meal-card">
+        <div class="meal-header">
+          <div class="meal-title-wrap">
+            <div class="meal-num">02</div>
+            <div>
+              <div class="meal-name">Antrenman Öncesi</div>
+              <div class="meal-time">10:30 — Enerji Yükleme</div>
+            </div>
+          </div>
+          <div class="meal-kcal">~400 kcal</div>
+        </div>
+        <div class="meal-items">
+          <div class="meal-item"><span class="meal-item-name">Pirinç / Patates</span><span class="meal-item-amount">150g (pişmiş)</span></div>
+          <div class="meal-item"><span class="meal-item-name">Tavuk göğsü</span><span class="meal-item-amount">150g</span></div>
+          <div class="meal-item"><span class="meal-item-name">Zeytinyağı</span><span class="meal-item-amount">1 çay kaşığı</span></div>
+        </div>
+      </div>
+
+      <div class="meal-card" style="border-color:rgba(200,255,0,0.25)">
+        <div class="meal-header">
+          <div class="meal-title-wrap">
+            <div class="meal-num">03</div>
+            <div>
+              <div class="meal-name">Antrenman Sonrası</div>
+              <div class="meal-time">Antrenman biter bitmez — Anabolik Pencere</div>
+            </div>
+          </div>
+          <div class="meal-kcal">~500 kcal</div>
+        </div>
+        <div class="meal-items">
+          <div class="meal-item"><span class="meal-item-name">Whey Protein</span><span class="meal-item-amount">1.5 ölçek (45g)</span></div>
+          <div class="meal-item"><span class="meal-item-name">Muz</span><span class="meal-item-amount">1 büyük adet</span></div>
+          <div class="meal-item"><span class="meal-item-name">Beyaz pirinç</span><span class="meal-item-amount">100g (pişmiş)</span></div>
+          <div class="meal-item"><span class="meal-item-name">Bal</span><span class="meal-item-amount">1 çay kaşığı</span></div>
+        </div>
+      </div>
+
+      <div class="meal-card">
+        <div class="meal-header">
+          <div class="meal-title-wrap">
+            <div class="meal-num">04</div>
+            <div>
+              <div class="meal-name">Öğle / İkindi Öğünü</div>
+              <div class="meal-time">14:00-15:00 — Toparlanma</div>
+            </div>
+          </div>
+          <div class="meal-kcal">~550 kcal</div>
+        </div>
+        <div class="meal-items">
+          <div class="meal-item"><span class="meal-item-name">Somon / Ton balığı</span><span class="meal-item-amount">180g</span></div>
+          <div class="meal-item"><span class="meal-item-name">Tatlı patates</span><span class="meal-item-amount">200g (pişmiş)</span></div>
+          <div class="meal-item"><span class="meal-item-name">Yeşil sebze (brokoli, ıspanak)</span><span class="meal-item-amount">150g</span></div>
+          <div class="meal-item"><span class="meal-item-name">Zeytinyağı</span><span class="meal-item-amount">1 yemek kaşığı</span></div>
+        </div>
+      </div>
+
+      <div class="meal-card">
+        <div class="meal-header">
+          <div class="meal-title-wrap">
+            <div class="meal-num">05</div>
+            <div>
+              <div class="meal-name">Gece Öğünü</div>
+              <div class="meal-time">20:00 — Gece Protein</div>
+            </div>
+          </div>
+          <div class="meal-kcal">~400 kcal</div>
+        </div>
+        <div class="meal-items">
+          <div class="meal-item"><span class="meal-item-name">Cottage cheese / Süzme peynir</span><span class="meal-item-amount">200g</span></div>
+          <div class="meal-item"><span class="meal-item-name">Yumurta beyazı</span><span class="meal-item-amount">3 adet</span></div>
+          <div class="meal-item"><span class="meal-item-name">Ceviz / Badem</span><span class="meal-item-amount">30g</span></div>
+          <div class="meal-item"><span class="meal-item-name">Çilek / Yaban mersini</span><span class="meal-item-amount">1 avuç</span></div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top:20px">
+      <div class="section-label">Takviye Önerileri</div>
+      <div class="tip-card">
+        <div class="tip-header">🧪 Temel Takviyeler</div>
+        <div class="tip-text">
+          <b style="color:var(--accent)">Kreatin Monohidrat</b> — 5g/gün (zamanlama önemli değil)<br>
+          <b style="color:var(--accent)">Whey Protein</b> — antrenman sonrası 40-50g<br>
+          <b style="color:var(--accent)">D3 Vitamini</b> — 2000-4000 IU/gün<br>
+          <b style="color:var(--accent)">Omega-3</b> — 2-3g/gün (toparlanma & inflamasyon)<br>
+          <b style="color:var(--accent)">Magnezyum</b> — 400mg gece (uyku kalitesi & kas)
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- WEEKLY PLAN TAB -->
+<div id="tab-weekly" class="tab-content">
+  <div class="weekly-section">
+    <div class="section-label">Önerilen Haftalık Program</div>
+
+    <div class="week-card">
+      <div class="week-header">
+        <div class="week-title">PPL x2 — 6 Gün Split</div>
+        <div class="week-sub">David Laid'in favori programlama yaklaşımı · Lean bulk fazı</div>
+      </div>
+      <div class="week-rows">
+        <div class="week-row">
+          <div class="week-day">PAZ</div>
+          <div class="week-focus">Push A — Göğüs & Omuz Ağırlıklı<small>Incline Bench, OHP, Lateral Raise, Triceps</small></div>
+          <span class="week-badge badge-push">Push</span>
+        </div>
+        <div class="week-row">
+          <div class="week-day">SAL</div>
+          <div class="week-focus">Pull A — Sırt Genişliği & Biceps<small>Pull-up, BB Row, Face Pull, Curl</small></div>
+          <span class="week-badge badge-pull">Pull</span>
+        </div>
+        <div class="week-row">
+          <div class="week-day">ÇAR</div>
+          <div class="week-focus">Legs A — Quad & Hamstring<small>Squat, RDL, Leg Press, Calf Raise</small></div>
+          <span class="week-badge badge-legs">Legs</span>
+        </div>
+        <div class="week-row">
+          <div class="week-day">PER</div>
+          <div class="week-focus">Push B — Güç Odaklı<small>Flat Bench, Arnold Press, Skull Crusher</small></div>
+          <span class="week-badge badge-push">Push</span>
+        </div>
+        <div class="week-row">
+          <div class="week-day">CUM</div>
+          <div class="week-focus">Pull B — Deadlift & Sırt Kalınlığı<small>Deadlift, Lat Pulldown, Cable Row</small></div>
+          <span class="week-badge badge-pull">Pull</span>
+        </div>
+        <div class="week-row">
+          <div class="week-day">CMT</div>
+          <div class="week-focus">Legs B + Core + Aesthetic Pump<small>Front Squat, Lunge, Core + Lateral Raise, Face Pull, Hanging Leg Raise</small></div>
+          <span class="week-badge badge-legs">Legs</span>
+        </div>
+        <div class="week-row">
+          <div class="week-day">PAZ</div>
+          <div class="week-focus">Aktif Dinlenme<small>Yürüyüş, stretching, foam rolling</small></div>
+          <span class="week-badge badge-rest">Rest</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Kardio Stratejisi</div>
+    <div class="week-card">
+      <div class="week-rows">
+        <div class="week-row">
+          <div class="week-day" style="width:60px;font-size:10px">LISS</div>
+          <div class="week-focus">Haftada 2-3x Yürüyüş<small>30-45 dk, 120-140 bpm — yağ yakımı, kas kaybetmez</small></div>
+          <span class="week-badge badge-cardio">Cardio</span>
+        </div>
+        <div class="week-row">
+          <div class="week-day" style="width:60px;font-size:10px">HIIT</div>
+          <div class="week-focus">Haftada 1x Sprint<small>10 dk ısınma + 8x (20sn sprint / 40sn yürüyüş)</small></div>
+          <span class="week-badge badge-cardio">Opsiyonel</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">David Laid Tarzı Kritik Prensipler</div>
+
+    <div class="tip-card">
+      <div class="tip-header">📈 Progresif Yüklenme</div>
+      <div class="tip-text">Her haftada ya 1 rep artır ya da ağırlığa 2.5kg ekle. David Laid'in fiziğinin temeli bu basit kural. Aynı ağırlıkla aynı reph yapmak büyüme getirmez.</div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-header">🎯 V-Taper Önceliği</div>
+      <div class="tip-text">Lateral raise ve pull-up'a diğer hareketlerden daha fazla özen göster. Omuz genişliği + lat gelişimi = David Laid silueti. Haftada 6+ set lateral raise yap.</div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-header">😴 Uyku & Toparlanma</div>
+      <div class="tip-text">Kas salonda değil, yatakta büyür. Gece 7-9 saat uyku zorunlu. Gece öğününde yavaş sindirilen protein (casein/süzme peynir) gece boyunca kas sentezini destekler.</div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-header">⏱️ Zaman Çerçevesi</div>
+      <div class="tip-text"><b style="color:var(--accent)">1-2 ay:</b> Yağ oranı %12'ye iner, karın çizgileri belirginleşir.<br><b style="color:var(--accent)">3-4 ay:</b> Omuz ve sırt genişliği görünür şekilde artar.<br><b style="color:var(--accent)">6+ ay:</b> David Laid tarzı lean & aesthetic physique ortaya çıkmaya başlar.</div>
+    </div>
+
+  </div>
+
+<div class="tip-card">
+  <div class="tip-header">🏆 Zayıf Nokta Protokolü</div>
+  <div class="tip-text">
+    Omuz veya sırt gelişimi geride kalıyorsa haftada 2 gün yerine 3 temas yap.
+    Push günlerinin sonunda 3 set lateral raise, pull günlerinin sonunda 3 set face pull ekle.
+  </div>
+</div>
+
+<div class="tip-card">
+  <div class="tip-header">📊 Performans Takibi</div>
+  <div class="tip-text">
+    Her hafta şu 4 hareketi kaydet:
+    Incline Bench Press, Pull-Up, Squat ve Lateral Raise.
+    En az birinde tekrar veya ağırlık artışı hedefle.
+  </div>
+</div>
+
+<div class="tip-card">
+  <div class="tip-header">🚶 Günlük Aktivite Hedefi</div>
+  <div class="tip-text">
+    Günlük 8.000–12.000 adım hedefle.
+    Bu, yağ oranını düşürürken toparlanmayı bozmayan en verimli yöntemlerden biridir.
+  </div>
+</div>
+
+<div class="tip-card">
+  <div class="tip-header">🔄 8 Haftalık İlerleme Döngüsü</div>
+  <div class="tip-text">
+    7 hafta progresif yüklenme uygula, 8. hafta hacmi %40-50 azaltarak deload yap.
+    Sonrasında yeni ağırlıklarla döngüye tekrar başla.
+  </div>
+</div>
+
+
+
+<div class="tip-card">
+  <div class="tip-header">💪 Upper Spec Güncellemesi</div>
+  <div class="tip-text">
+    Cumartesi Upper Spec gününe ekle:<br>
+    • Face Pull — 3x15-20<br>
+    • Hanging Leg Raise — 3x12-15<br><br>
+    Weighted Plank hacmini 2 sete düşür, Cable Crunch'u 3 sete indir.
+    Amaç: Daha güçlü V-Taper, arka omuz detayı ve alt karın gelişimi.
+  </div>
+</div>
+
+<div class="footer">
+  <div class="footer-text">
+    Bu program <span class="footer-accent">lean bulk</span> fazı için optimize edilmiştir.<br>
+    Kilona göre kalorileri ayarla · Her 4 haftada deload yap · Form > Ağırlık<br>
+    <span style="color:var(--border)">Bir doktor veya diyetisyene danışmayı unutma.</span>
+  </div>
+</div>
+
+<!-- EXERCISE DETAIL MODAL -->
+<div class="modal-overlay" id="exModalOverlay">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-close" onclick="closeExerciseModal()">✕</div>
+    <div class="modal-stage">
+      <div class="phase-badge-row">
+        <span class="phase-pill active ecc">Eksantrik</span>
+        <span class="phase-pill active con">Konsantrik</span>
+      </div>
+      <div class="speed-indicator">
+        <span>HIZ</span>
+        <div id="speedDotsWrap"></div>
+      </div>
+      <div id="modalStageWrap"></div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-title-row">
+        <div>
+          <div class="modal-ex-name" id="modalExName"></div>
+          <div class="modal-ex-note" id="modalExNote"></div>
+        </div>
+        <div class="modal-setsreps">
+          <div class="modal-sets-val" id="modalSetsVal"></div>
+          <div class="modal-reps-val" id="modalRepsVal"></div>
+        </div>
+      </div>
+
+      <div class="muscle-tags" id="muscleTags"></div>
+
+      <div class="modal-section" id="warmupSection" style="display:none">
+        <div class="modal-section-label">🔥 Isınma Protokolü</div>
+        <div class="warmup-card"><span class="warmup-icon">🔥</span><span id="warmupText"></span></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-label">⏱️ Tempo (saniye)</div>
+        <div id="tempoChips"></div>
+        <div class="speed-ctrl">
+          <div class="speed-btn" data-mult="0.6" onclick="setModalSpeed(0.6)">Yavaş</div>
+          <div class="speed-btn active" data-mult="1" onclick="setModalSpeed(1)">Normal</div>
+          <div class="speed-btn" data-mult="1.8" onclick="setModalSpeed(1.8)">Hızlı</div>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-label">✅ Odak Noktası</div>
+        <div class="cue-card"><span class="cue-icon">💡</span><span id="cueText"></span></div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-label">⚠️ Sık Yapılan Hata</div>
+        <div class="mistake-card"><span class="mistake-icon">⚠️</span><span id="mistakeText"></span></div>
+      </div>
+
+      <div class="modal-section modal-set-tracker">
+        <div class="modal-section-label">📋 Set Takibi</div>
+        <div id="setPillsWrap"></div>
+      </div>
+
+      <div class="modal-section" id="overloadSection">
+        <div class="modal-section-label">📈 Progressive Overload</div>
+        <div class="overload-card"><span class="overload-icon">⬆️</span><span id="overloadText"></span></div>
+      </div>
+
+      <div class="modal-section" id="progressionSection" style="display:none">
+        <div class="modal-section-label">🔄 Hareket Alternatifi</div>
+        <div class="overload-card"><span class="overload-icon">🔄</span><span id="progressionText"></span></div>
+      </div>
+
+      <button class="modal-done-btn" id="modalDoneBtn" onclick="markAllSets()"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+const SKIN = "#dcb38f", SKIN_SH = "#cfa57f", ACCENT="#c8ff00";
+
+function deg2rad(d){ return d*Math.PI/180; }
+
+// ---- Primitive limb with rotating sub-segment (e.g. forearm about elbow, shin about knee) ----
+function limbChain({shoulder, upperAngle, upperLen, lowerLen, foreStart=0, foreSweep=0, dur="1.8s",
+                     upW=14, foW=12, skin=SKIN, equipment="none", muscle=null, mirror=false, easing="ease-in-out"}){
+  const sign = mirror?-1:1;
+  const ux = Math.sin(deg2rad(upperAngle))*upperLen*sign;
+  const uy = Math.cos(deg2rad(upperAngle))*upperLen;
+  let muscleSvg="";
+  if(muscle){
+    const anim = muscle.animate ? `<animate attributeName="rx" values="${muscle.rx*0.75};${muscle.rx*1.35};${muscle.rx*0.75}" dur="${dur}" repeatCount="indefinite"/>` : "";
+    muscleSvg = `<ellipse cx="${muscle.cx}" cy="${muscle.cy}" rx="${muscle.rx}" ry="${muscle.ry}" fill="${ACCENT}" opacity="0.85">${anim}</ellipse>`;
+  }
+  let equip="";
+  if(equipment==="dumbbell"){
+    equip=`<rect x="-13" y="${lowerLen-4}" width="26" height="8" rx="3" fill="#333" stroke="#4a4a4a"/><circle cx="-13" cy="${lowerLen}" r="7" fill="#262626" stroke="#3a3a3a"/><circle cx="13" cy="${lowerLen}" r="7" fill="#262626" stroke="#3a3a3a"/>`;
+  } else if(equipment==="cable"){
+    equip=`<circle cx="0" cy="${lowerLen}" r="5" fill="#222" stroke="#444"/>`;
+  } else if(equipment==="bar"){
+    equip=`<rect x="-22" y="${lowerLen-3}" width="44" height="6" rx="3" fill="#9a9a9a"/>`;
+  }
+  return `<g transform="translate(${shoulder.x},${shoulder.y})">
+    <line x1="0" y1="0" x2="${ux}" y2="${uy}" stroke="${skin}" stroke-width="${upW}" stroke-linecap="round"/>
+    ${muscleSvg}
+    <g transform="translate(${ux},${uy})"><g>
+      <animateTransform attributeName="transform" type="rotate" values="${foreStart};${foreStart+foreSweep};${foreStart}" dur="${dur}" repeatCount="indefinite" additive="sum" calcMode="${easing==='linear'?'linear':'spline'}" ${easing!=='linear'?'keySplines="0.4 0 0.2 1;0.4 0 0.2 1" keyTimes="0;0.5;1"':''}/>
+      <line x1="0" y1="0" x2="0" y2="${lowerLen}" stroke="${skin}" stroke-width="${foW}" stroke-linecap="round"/>
+      <circle cx="0" cy="${lowerLen}" r="6" fill="${skin}"/>
+      ${equip}
+    </g></g>
+  </g>`;
+}
+
+function staticArm({shoulder, angle, len=70, skin=SKIN_SH, w=12}){
+  const x = Math.sin(deg2rad(angle))*len, y = Math.cos(deg2rad(angle))*len;
+  return `<line x1="${shoulder.x}" y1="${shoulder.y}" x2="${shoulder.x+x}" y2="${shoulder.y+y}" stroke="${skin}" stroke-width="${w}" stroke-linecap="round"/>`;
+}
+
+function torso({lean=0, pivot={x:100,y:130}, shirt="#1e1e1e"}={}){
+  return `<g transform="rotate(${lean} ${pivot.x} ${pivot.y})">
+    <rect x="76" y="168" width="48" height="34" rx="12" fill="#191919"/>
+    <path d="M68,98 C66,130 70,155 78,172 L122,172 C130,155 134,130 132,98 C130,80 100,76 100,76 C100,76 70,80 68,98 Z" fill="${shirt}"/>
+    <path d="M100,90 L100,160" stroke="#000" stroke-width="1" opacity="0.25"/>
+  </g>`;
+}
+function headNeck({lean=0, pivot={x:100,y:130}}={}){
+  return `<g transform="rotate(${lean} ${pivot.x} ${pivot.y})">
+    <rect x="92" y="62" width="16" height="18" rx="5" fill="${SKIN}"/>
+    <circle cx="100" cy="50" r="17" fill="${SKIN}"/>
+    <circle cx="106" cy="47" r="1.6" fill="#3a2a1c"/>
+  </g>`;
+}
+function legsStatic(){
+  return `<ellipse cx="88" cy="278" rx="13" ry="6" fill="#0d0d0d"/><ellipse cx="112" cy="278" rx="13" ry="6" fill="#0d0d0d"/>
+  <rect x="80" y="195" width="16" height="78" rx="7" fill="#262626"/><rect x="104" y="195" width="16" height="78" rx="7" fill="#262626"/>`;
+}
+function legsSquat({dur="2.2s"}){
+  return `<ellipse cx="88" cy="278" rx="13" ry="6" fill="#0d0d0d"/><ellipse cx="112" cy="278" rx="13" ry="6" fill="#0d0d0d"/>
+  <rect x="78" y="195" width="16" height="46" rx="7" fill="#262626"/><rect x="106" y="195" width="16" height="46" rx="7" fill="#262626"/>
+  <g transform="translate(86,241)"><g><animateTransform attributeName="transform" type="rotate" values="0;-35;0" dur="${dur}" repeatCount="indefinite"/><rect x="-8" y="0" width="16" height="38" rx="7" fill="#262626"/></g></g>
+  <g transform="translate(114,241)"><g><animateTransform attributeName="transform" type="rotate" values="0;35;0" dur="${dur}" repeatCount="indefinite"/><rect x="-8" y="0" width="16" height="38" rx="7" fill="#262626"/></g></g>`;
+}
+function bodyBob({dur, amount=28, children}){
+  return `<g><animateTransform attributeName="transform" type="translate" values="0,0;0,${amount};0,0" dur="${dur}" repeatCount="indefinite"/>${children}</g>`;
+}
+
+function svgWrap(inner, vb="0 0 200 300"){
+  return `<svg viewBox="${vb}" xmlns="http://www.w3.org/2000/svg">${inner}</svg>`;
+}
+
+// ================= POSE TEMPLATES =================
+const POSES = {
+
+  STANDING_CURL: (cfg) => {
+    const rev = cfg.reverse;
+    const sweep = rev ? 95 : -125;
+    const start = rev ? -95 : 0;
+    return svgWrap([
+      legsStatic(),
+      torso(),
+      staticArm({shoulder:{x:72,y:100}, angle:-8}),
+      headNeck(),
+      limbChain({shoulder:{x:128,y:100}, upperAngle:8, upperLen:42, lowerLen:38,
+        foreStart:start, foreSweep:sweep, dur:cfg.dur, equipment:cfg.equipment||"dumbbell",
+        muscle:{cx:5,cy:20,rx:8,ry:13,animate:true}})
+    ].join(""));
+  },
+
+  // (deprecated experimental template removed — see PRESS_OVERHEAD)
+  PRESS_OVERHEAD: (cfg) => {
+    const dur = cfg.dur;
+    const armUp = (mirror) => `
+      <g transform="translate(${mirror?72:128},100)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="${mirror?55:-55};${mirror?14:-14};${mirror?55:-55}" dur="${dur}" repeatCount="indefinite"/>
+          <line x1="0" y1="0" x2="0" y2="-40" stroke="${mirror?SKIN_SH:SKIN}" stroke-width="13" stroke-linecap="round"/>
+          ${mirror?'':`<ellipse cx="0" cy="-18" rx="8" ry="12" fill="${ACCENT}" opacity="0.85"><animate attributeName="ry" values="9;14;9" dur="${dur}" repeatCount="indefinite"/></ellipse>`}
+          <g transform="translate(0,-40)">
+            <line x1="0" y1="0" x2="0" y2="-34" stroke="${mirror?SKIN_SH:SKIN}" stroke-width="11" stroke-linecap="round"/>
+            <circle cx="0" cy="-34" r="6" fill="${mirror?SKIN_SH:SKIN}"/>
+            ${cfg.equipment==='dumbbell' ? `<rect x="-13" y="-38" width="26" height="8" rx="3" fill="#333"/><circle cx="-13" cy="-34" r="7" fill="#262626"/><circle cx="13" cy="-34" r="7" fill="#262626"/>` : ''}
+          </g>
+        </g>
+      </g>`;
+    return svgWrap([legsStatic(), torso(), armUp(true), headNeck(), armUp(false)].join(""));
+  },
+
+  LATERAL_RAISE: (cfg) => {
+    const dur = cfg.dur;
+    const armOut = (mirror) => `
+      <g transform="translate(${mirror?72:128},100)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="${mirror?6:-6};${mirror?92:-92};${mirror?6:-6}" dur="${dur}" repeatCount="indefinite"/>
+          <line x1="0" y1="0" x2="0" y2="40" stroke="${mirror?SKIN_SH:SKIN}" stroke-width="13" stroke-linecap="round"/>
+          ${mirror?'':`<ellipse cx="-5" cy="14" rx="9" ry="12" fill="${ACCENT}" opacity="0.85"><animate attributeName="rx" values="6;10.5;6" dur="${dur}" repeatCount="indefinite"/></ellipse>`}
+          <line x1="0" y1="40" x2="0" y2="68" stroke="${mirror?SKIN_SH:SKIN}" stroke-width="11" stroke-linecap="round"/>
+          <circle cx="0" cy="68" r="6" fill="${mirror?SKIN_SH:SKIN}"/>
+          ${cfg.equipment==='dumbbell' ? `<rect x="-13" y="64" width="26" height="8" rx="3" fill="#333"/><circle cx="-13" cy="68" r="7" fill="#262626"/><circle cx="13" cy="68" r="7" fill="#262626"/>` : ''}
+        </g>
+      </g>`;
+    return svgWrap([legsStatic(), torso(), armOut(true), headNeck(), armOut(false)].join(""));
+  },
+
+  LYING_PRESS: (cfg) => {
+    const dur = cfg.dur;
+    return svgWrap(`
+      <rect x="10" y="125" width="180" height="14" rx="4" fill="#2a2a2a"/>
+      <rect x="25" y="139" width="10" height="26" fill="#222"/>
+      <rect x="165" y="139" width="10" height="26" fill="#222"/>
+      <g transform="translate(160,130) rotate(90) translate(-100,-130)">
+        ${legsStatic()}
+        ${torso()}
+        ${headNeck()}
+      </g>
+      <g transform="translate(85,108)">
+        <g><animateTransform attributeName="transform" type="rotate" values="50;0;50" dur="${dur}" repeatCount="indefinite"/>
+          <line x1="0" y1="0" x2="36" y2="0" stroke="${SKIN_SH}" stroke-width="13" stroke-linecap="round"/>
+          <g transform="translate(36,0)"><g>
+            <animateTransform attributeName="transform" type="rotate" values="-65;0;-65" dur="${dur}" repeatCount="indefinite" additive="sum"/>
+            <line x1="0" y1="0" x2="32" y2="0" stroke="${SKIN_SH}" stroke-width="11" stroke-linecap="round"/>
+          </g></g>
+        </g>
+      </g>
+      <g transform="translate(115,108)">
+        <g><animateTransform attributeName="transform" type="rotate" values="-50;0;-50" dur="${dur}" repeatCount="indefinite"/>
+          <line x1="0" y1="0" x2="-36" y2="0" stroke="${SKIN}" stroke-width="14" stroke-linecap="round"/>
+          <ellipse cx="-16" cy="-2" rx="11" ry="8" fill="${ACCENT}" opacity="0.85"><animate attributeName="ry" values="6;9;6" dur="${dur}" repeatCount="indefinite"/></ellipse>
+          <g transform="translate(-36,0)"><g>
+            <animateTransform attributeName="transform" type="rotate" values="65;0;65" dur="${dur}" repeatCount="indefinite" additive="sum"/>
+            <line x1="0" y1="0" x2="-32" y2="0" stroke="${SKIN}" stroke-width="12" stroke-linecap="round"/>
+            <circle cx="-32" cy="0" r="6" fill="${SKIN}"/>
+          </g></g>
+        </g>
+      </g>
+      <rect x="55" y="58" width="110" height="8" rx="3" fill="#9a9a9a">
+        <animate attributeName="y" values="58;88;58" dur="${dur}" repeatCount="indefinite"/>
+      </rect>
+    `, "0 0 200 180");
+  },
+
+  ROW_BENT: (cfg) => {
+    const dur=cfg.dur;
+    return svgWrap([
+      legsStatic(),
+      torso({lean:42, pivot:{x:100,y:200}}),
+      headNeck({lean:42, pivot:{x:100,y:200}}),
+      `<g transform="translate(72,150)"><g>
+        <animateTransform attributeName="transform" type="rotate" values="0;-55;0" dur="${dur}" repeatCount="indefinite"/>
+        <line x1="0" y1="0" x2="0" y2="36" stroke="${SKIN_SH}" stroke-width="12" stroke-linecap="round"/>
+        <circle cx="0" cy="36" r="6" fill="${SKIN_SH}"/>
+      </g></g>`,
+      `<g transform="translate(128,150)"><g>
+        <animateTransform attributeName="transform" type="rotate" values="0;-55;0" dur="${dur}" repeatCount="indefinite"/>
+        <line x1="0" y1="0" x2="0" y2="36" stroke="${SKIN}" stroke-width="13" stroke-linecap="round"/>
+        <ellipse cx="0" cy="14" rx="8" ry="11" fill="${ACCENT}" opacity="0.85"><animate attributeName="rx" values="6;9.5;6" dur="${dur}" repeatCount="indefinite"/></ellipse>
+        <circle cx="0" cy="36" r="6" fill="${SKIN}"/>
+      </g></g>`,
+      cfg.equipment==='bar' ? `<rect x="60" y="178" width="80" height="6" rx="3" fill="#9a9a9a"><animate attributeName="y" values="178;128;178" dur="${dur}" repeatCount="indefinite"/></rect>` : ""
+    ].join(""), "0 0 200 280");
+  },
+
+  // Standing chest fly: arms sweep from wide-open to crossed in front (cable crossover style)
+  STANDING_FLY: (cfg) => {
+    const dur = cfg.dur || "1.8s";
+    const armSwing = (mirror) => `
+      <g transform="translate(${mirror?72:128},100)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="${mirror?-70:70};${mirror?-15:15};${mirror?-70:70}" dur="${dur}" repeatCount="indefinite"/>
+          <line x1="0" y1="0" x2="0" y2="42" stroke="${mirror?SKIN_SH:SKIN}" stroke-width="13" stroke-linecap="round"/>
+          ${mirror?'':`<ellipse cx="0" cy="16" rx="9" ry="13" fill="${ACCENT}" opacity="0.85"><animate attributeName="rx" values="7;10.5;7" dur="${dur}" repeatCount="indefinite"/></ellipse>`}
+          <circle cx="0" cy="42" r="6" fill="${mirror?SKIN_SH:SKIN}"/>
+          ${cfg.equipment==='cable' ? `<circle cx="0" cy="42" r="5" fill="#222" stroke="#444"/>` : ''}
+        </g>
+      </g>`;
+    return svgWrap([legsStatic(), torso(), armSwing(true), headNeck(), armSwing(false)].join(""));
+  },
+
+  PULLOVER_LYING: (cfg) => {
+    const dur = cfg.dur || "1.8s";
+    return svgWrap(`
+      <rect x="20" y="125" width="160" height="14" rx="4" fill="#2a2a2a"/>
+      <rect x="35" y="139" width="10" height="26" fill="#222"/>
+      <rect x="155" y="139" width="10" height="26" fill="#222"/>
+      <circle cx="48" cy="108" r="15" fill="${SKIN}"/>
+      <rect x="60" y="98" width="80" height="26" rx="12" fill="#262626"/>
+      <rect x="148" y="100" width="14" height="50" rx="6" fill="#262626"/>
+      <rect x="166" y="100" width="14" height="50" rx="6" fill="#262626"/>
+      <g transform="translate(64,108)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="-100;-5;-100" dur="${dur}" repeatCount="indefinite"/>
+          <line x1="0" y1="0" x2="0" y2="46" stroke="${SKIN}" stroke-width="13" stroke-linecap="round"/>
+          <ellipse cx="6" cy="20" rx="9" ry="13" fill="${ACCENT}" opacity="0.85"/>
+          <circle cx="0" cy="46" r="6" fill="${SKIN}"/>
+        </g>
+      </g>
+    `, "0 0 200 175");
+  },
+
+  REAR_DELT: (cfg) => {
+    const dur=cfg.dur;
+    return svgWrap([
+      legsStatic(),
+      torso({lean:38, pivot:{x:100,y:200}}),
+      headNeck({lean:38, pivot:{x:100,y:200}}),
+      `<g transform="translate(75,145)"><g>
+        <animateTransform attributeName="transform" type="rotate" values="15;-70;15" dur="${dur}" repeatCount="indefinite"/>
+        <line x1="0" y1="0" x2="0" y2="34" stroke="${SKIN_SH}" stroke-width="12" stroke-linecap="round"/>
+      </g></g>`,
+      `<g transform="translate(125,145)"><g>
+        <animateTransform attributeName="transform" type="rotate" values="-15;70;-15" dur="${dur}" repeatCount="indefinite"/>
+        <line x1="0" y1="0" x2="0" y2="34" stroke="${SKIN}" stroke-width="13" stroke-linecap="round"/>
+        <ellipse cx="0" cy="30" rx="7" ry="9" fill="${ACCENT}" opacity="0.8"/>
+      </g></g>`
+    ].join(""), "0 0 200 280");
+  },
+
+  PULLDOWN_SEATED: (cfg) => {
+    const dur=cfg.dur;
+    return svgWrap([
+      `<rect x="90" y="15" width="20" height="8" rx="3" fill="#3a3a3a"/>`,
+      `<rect x="78" y="225" width="44" height="14" rx="5" fill="#222"/>`,
+      `<g transform="translate(0,15)">`,
+      torso(),
+      headNeck(),
+      `<rect x="80" y="200" width="16" height="40" rx="7" fill="#262626"/>`,
+      `<rect x="104" y="200" width="16" height="40" rx="7" fill="#262626"/>`,
+      `</g>`,
+      `<g transform="translate(72,125)"><g>
+        <animateTransform attributeName="transform" type="rotate" values="-60;15;-60" dur="${dur}" repeatCount="indefinite"/>
+        <line x1="0" y1="0" x2="0" y2="38" stroke="${SKIN_SH}" stroke-width="13" stroke-linecap="round"/>
+      </g></g>`,
+      `<g transform="translate(128,125)"><g>
+        <animateTransform attributeName="transform" type="rotate" values="60;-15;60" dur="${dur}" repeatCount="indefinite"/>
+        <line x1="0" y1="0" x2="0" y2="38" stroke="${SKIN}" stroke-width="14" stroke-linecap="round"/>
+        <ellipse cx="6" cy="18" rx="9" ry="13" fill="${ACCENT}" opacity="0.85"/>
+      </g></g>`,
+      `<rect x="55" y="53" width="90" height="6" rx="3" fill="#9a9a9a"><animate attributeName="y" values="53;115;53" dur="${dur}" repeatCount="indefinite"/></rect>`
+    ].join(""), "0 0 200 250");
+  },
+
+  SQUAT: (cfg) => {
+    const dur = cfg.dur || "2.4s";
+    return svgWrap(`
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,26;0,0" dur="${dur}" repeatCount="indefinite"/>
+        ${legsSquat({dur})}
+        ${torso({lean:8})}
+        ${headNeck({lean:8})}
+        <g transform="translate(72,100)"><g>
+          <animateTransform attributeName="transform" type="rotate" values="-15;-55;-15" dur="${dur}" repeatCount="indefinite"/>
+          <line x1="0" y1="0" x2="0" y2="44" stroke="${SKIN_SH}" stroke-width="12" stroke-linecap="round"/>
+        </g></g>
+        <g transform="translate(128,100)"><g>
+          <animateTransform attributeName="transform" type="rotate" values="15;55;15" dur="${dur}" repeatCount="indefinite"/>
+          <line x1="0" y1="0" x2="0" y2="44" stroke="${SKIN}" stroke-width="13" stroke-linecap="round"/>
+        </g></g>
+        ${cfg.equipment==='bar' ? `<rect x="66" y="80" width="68" height="8" rx="4" fill="#b8b8b8"/>` : ''}
+      </g>
+    `);
+  },
+
+  HINGE_DEADLIFT: (cfg) => {
+    const dur=cfg.dur;
+    return svgWrap(`
+      <rect x="84" y="230" width="13" height="6" rx="3" fill="#0d0d0d"/>
+      <rect x="103" y="230" width="13" height="6" rx="3" fill="#0d0d0d"/>
+      <rect x="84" y="160" width="13" height="72" rx="6" fill="#262626"/>
+      <rect x="103" y="160" width="13" height="72" rx="6" fill="#262626"/>
+      <g transform="translate(100,160)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="50;5;50" dur="${dur}" repeatCount="indefinite"/>
+          <!-- rigid head+torso block, hips at local origin, head extends upward (negative y) -->
+          <rect x="-24" y="-92" width="48" height="86" rx="13" fill="#262626"/>
+          <rect x="-8" y="-110" width="16" height="18" rx="5" fill="${SKIN}"/>
+          <circle cx="0" cy="-128" r="15" fill="${SKIN}"/>
+          <!-- arms hanging from shoulder, reaching down to bar -->
+          <line x1="-18" y1="-78" x2="-18" y2="-2" stroke="${SKIN_SH}" stroke-width="11" stroke-linecap="round"/>
+          <line x1="18" y1="-78" x2="18" y2="-2" stroke="${SKIN}" stroke-width="12" stroke-linecap="round"/>
+          <rect x="-34" y="-8" width="68" height="7" rx="3" fill="#9a9a9a"/>
+        </g>
+      </g>
+    `, "0 0 200 245");
+  },
+
+  LEG_PRESS: (cfg) => {
+    const dur=cfg.dur;
+    return svgWrap(`
+      <!-- angled machine frame (background) -->
+      <rect x="120" y="15" width="14" height="170" rx="4" fill="#1d1d1d" transform="rotate(12 127 100)"/>
+      <rect x="150" y="15" width="14" height="170" rx="4" fill="#1d1d1d" transform="rotate(12 157 100)"/>
+
+      <!-- seat -->
+      <rect x="15" y="95" width="40" height="55" rx="10" fill="#222"/>
+      <!-- head -->
+      <circle cx="40" cy="68" r="15" fill="${SKIN}"/>
+      <!-- torso reclined backward -->
+      <rect x="22" y="78" width="44" height="60" rx="14" fill="#2a2a2a" transform="rotate(8 40 100)"/>
+      <!-- arm gripping seat handle -->
+      <line x1="35" y1="100" x2="20" y2="122" stroke="${SKIN_SH}" stroke-width="10" stroke-linecap="round"/>
+
+      <!-- hip joint: thigh + shin chain pressing the platform -->
+      <g transform="translate(60,118)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="-8;-48;-8" dur="${dur}" repeatCount="indefinite"/>
+          <rect x="0" y="-11" width="55" height="22" rx="10" fill="${SKIN}"/>
+          <g transform="translate(55,0)">
+            <g>
+              <animateTransform attributeName="transform" type="rotate" values="0;58;0" dur="${dur}" repeatCount="indefinite" additive="sum"/>
+              <rect x="0" y="-10" width="48" height="20" rx="9" fill="${SKIN_SH}"/>
+              <ellipse cx="20" cy="0" rx="13" ry="11" fill="${ACCENT}" opacity="0.85">
+                <animate attributeName="rx" values="9;15;9" dur="${dur}" repeatCount="indefinite"/>
+              </ellipse>
+            </g>
+          </g>
+        </g>
+      </g>
+
+      <!-- footplate, follows leg distance -->
+      <g transform="translate(60,118)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="-8;-48;-8" dur="${dur}" repeatCount="indefinite"/>
+          <g transform="translate(55,0)">
+            <g>
+              <animateTransform attributeName="transform" type="rotate" values="0;58;0" dur="${dur}" repeatCount="indefinite" additive="sum"/>
+              <rect x="44" y="-26" width="10" height="42" rx="3" fill="#333" transform="rotate(12 49 -5)"/>
+            </g>
+          </g>
+        </g>
+      </g>
+    `, "0 0 180 190");
+  },
+
+  LEG_CURL_PRONE: (cfg) => {
+    const dur=cfg.dur;
+    return svgWrap(`
+      <rect x="10" y="128" width="150" height="16" rx="5" fill="#2a2a2a"/>
+      <rect x="10" y="144" width="14" height="30" fill="#222"/>
+      <rect x="146" y="144" width="14" height="30" fill="#222"/>
+      <circle cx="34" cy="108" r="16" fill="${SKIN}"/>
+      <rect x="48" y="96" width="84" height="28" rx="13" fill="#262626"/>
+      <line x1="60" y1="118" x2="42" y2="142" stroke="${SKIN_SH}" stroke-width="11" stroke-linecap="round"/>
+      <rect x="118" y="103" width="20" height="40" rx="8" fill="${SKIN}"/>
+      <g transform="translate(128,143)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="0;100;0" dur="${dur}" repeatCount="indefinite"/>
+          <rect x="-9" y="0" width="18" height="50" rx="8" fill="${SKIN_SH}"/>
+          <ellipse cx="0" cy="-8" rx="12" ry="16" fill="${ACCENT}" opacity="0.85">
+            <animate attributeName="ry" values="11;17;11" dur="${dur}" repeatCount="indefinite"/>
+          </ellipse>
+          <rect x="-10" y="46" width="20" height="9" rx="3" fill="#333"/>
+        </g>
+      </g>
+    `, "0 0 170 185");
+  },
+
+  LEG_EXTENSION_SEATED: (cfg) => {
+    const dur=cfg.dur;
+    return svgWrap(`
+      <rect x="55" y="150" width="60" height="16" rx="6" fill="#222"/>
+      <rect x="62" y="60" width="46" height="92" rx="14" fill="#262626"/>
+      <circle cx="85" cy="46" r="16" fill="${SKIN}"/>
+      <line x1="68" y1="90" x2="48" y2="115" stroke="${SKIN_SH}" stroke-width="11" stroke-linecap="round"/>
+      <rect x="72" y="148" width="22" height="42" rx="9" fill="${SKIN}"/>
+      <g transform="translate(83,190)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="0;-72;0" dur="${dur}" repeatCount="indefinite"/>
+          <rect x="-9" y="0" width="18" height="48" rx="8" fill="${SKIN_SH}"/>
+          <ellipse cx="0" cy="-10" rx="12" ry="15" fill="${ACCENT}" opacity="0.85">
+            <animate attributeName="ry" values="11;16;11" dur="${dur}" repeatCount="indefinite"/>
+          </ellipse>
+          <rect x="-11" y="44" width="22" height="9" rx="3" fill="#333"/>
+        </g>
+      </g>
+    `, "0 0 170 200");
+  },
+
+  CALF_RAISE: (cfg) => {
+    const dur=cfg.dur;
+    return svgWrap(`
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-12;0,0" dur="${dur}" repeatCount="indefinite"/>
+        ${legsStatic()}
+        ${torso()}${headNeck()}
+        ${staticArm({shoulder:{x:72,y:100}, angle:-4})}
+        ${staticArm({shoulder:{x:128,y:100}, angle:4, skin:SKIN})}
+      </g>
+      <ellipse cx="88" cy="278" rx="13" ry="4" fill="#0d0d0d"><animate attributeName="ry" values="6;3;6" dur="${dur}" repeatCount="indefinite"/></ellipse>
+      <ellipse cx="112" cy="278" rx="13" ry="4" fill="#0d0d0d"><animate attributeName="ry" values="6;3;6" dur="${dur}" repeatCount="indefinite"/></ellipse>
+    `);
+  },
+
+  CORE_CRUNCH: (cfg) => {
+    const dur=cfg.dur;
+    return svgWrap(`
+      <rect x="20" y="175" width="160" height="14" rx="4" fill="#2a2a2a"/>
+      <rect x="40" y="160" width="16" height="20" rx="6" fill="#262626"/>
+      <rect x="64" y="160" width="16" height="20" rx="6" fill="#262626"/>
+      <line x1="118" y1="20" x2="118" y2="80" stroke="#666" stroke-width="3"/>
+      <g transform="translate(130,172)">
+        <g>
+          <animateTransform attributeName="transform" type="rotate" values="0;32;0" dur="${dur}" repeatCount="indefinite"/>
+          <rect x="-13" y="-78" width="46" height="80" rx="14" fill="#262626"/>
+          <ellipse cx="10" cy="-2" rx="13" ry="10" fill="${ACCENT}" opacity="0.85"/>
+          <circle cx="8" cy="-94" r="15" fill="${SKIN}"/>
+          <rect x="0" y="-82" width="16" height="14" rx="5" fill="${SKIN}"/>
+          <line x1="8" y1="-78" x2="8" y2="-50" stroke="#666" stroke-width="3"/>
+        </g>
+      </g>
+    `, "0 0 200 200");
+  },
+
+  PLANK_HOLD: (cfg) => {
+    return svgWrap(`
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,2;0,0" dur="1.4s" repeatCount="indefinite"/>
+        <rect x="20" y="118" width="18" height="18" rx="5" fill="#1a1a1a"/>
+        <rect x="172" y="118" width="18" height="18" rx="5" fill="#1a1a1a"/>
+        <circle cx="30" cy="80" r="17" fill="${SKIN}"/>
+        <rect x="46" y="64" width="114" height="32" rx="14" fill="#262626"/>
+        <rect x="156" y="64" width="20" height="52" rx="8" fill="#262626" transform="rotate(8 166 90)"/>
+      </g>
+    `, "0 0 210 145");
+  },
+
+  WALK_CYCLE: (cfg) => {
+    const dur=cfg.dur||"1s";
+    return svgWrap(`
+      <g transform="translate(86,241)"><g><animateTransform attributeName="transform" type="rotate" values="-28;28;-28" dur="${dur}" repeatCount="indefinite"/><rect x="-8" y="0" width="16" height="38" rx="7" fill="#262626"/></g></g>
+      <g transform="translate(114,241)"><g><animateTransform attributeName="transform" type="rotate" values="28;-28;28" dur="${dur}" repeatCount="indefinite"/><rect x="-8" y="0" width="16" height="38" rx="7" fill="#262626"/></g></g>
+      <rect x="78" y="195" width="16" height="50" rx="7" fill="#262626"/><rect x="106" y="195" width="16" height="50" rx="7" fill="#262626"/>
+      ${torso()}${headNeck()}
+      <g transform="translate(72,100)"><g><animateTransform attributeName="transform" type="rotate" values="35;-35;35" dur="${dur}" repeatCount="indefinite"/><line x1="0" y1="0" x2="0" y2="40" stroke="${SKIN_SH}" stroke-width="12" stroke-linecap="round"/></g></g>
+      <g transform="translate(128,100)"><g><animateTransform attributeName="transform" type="rotate" values="-35;35;-35" dur="${dur}" repeatCount="indefinite"/><line x1="0" y1="0" x2="0" y2="40" stroke="${SKIN}" stroke-width="13" stroke-linecap="round"/></g></g>
+    `);
+  },
+
+  STRETCH_POSE: (cfg) => {
+    const dur=cfg.dur||"2.4s";
+    return svgWrap([
+      legsStatic(), torso(), headNeck(),
+      `<g transform="translate(72,100)"><g><animateTransform attributeName="transform" type="rotate" values="-10;-150;-10" dur="${dur}" repeatCount="indefinite"/><line x1="0" y1="0" x2="0" y2="55" stroke="${SKIN_SH}" stroke-width="12" stroke-linecap="round"/></g></g>`,
+      `<g transform="translate(128,100)"><g><animateTransform attributeName="transform" type="rotate" values="10;150;10" dur="${dur}" repeatCount="indefinite"/><line x1="0" y1="0" x2="0" y2="55" stroke="${SKIN}" stroke-width="13" stroke-linecap="round"/></g></g>`
+    ].join(""));
+  },
+
+  FOAM_ROLL: (cfg) => {
+    const dur=cfg.dur||"1.8s";
+    return svgWrap(`
+      <rect x="40" y="170" width="120" height="20" rx="10" fill="#3a3a3a"/>
+      <g>
+        <animateTransform attributeName="transform" type="translate" values="-15,0;15,0;-15,0" dur="${dur}" repeatCount="indefinite"/>
+        <circle cx="172" cy="148" r="14" fill="${SKIN}"/>
+        <rect x="60" y="138" width="115" height="24" rx="11" fill="#262626"/>
+        <rect x="50" y="168" width="16" height="18" rx="6" fill="#262626"/>
+        <rect x="72" y="168" width="16" height="18" rx="6" fill="#262626"/>
+      </g>
+    `, "0 0 220 200");
+  }
+};
+
+
+</script>
+<script>
+/* ============================================================
+   EXERCISE DATABASE — 38 hareket, tam meta veri ile
+   Her obje: id, name, note, sets, reps, pose, equipment,
+   primary/secondary muscle, tempo (eksantrik-duraklama-konsantrik-duraklama),
+   mistake (en sık hata), cue (odak ipucu), speed (animasyon süresi)
+   ============================================================ */
+
+const EXDB = {
+
+  // ---------- MONDAY — PUSH (Chest/Shoulder/Triceps) ----------
+  "incline-barbell-press": {
+    name:"Incline Barbell Press", note:"Üst göğüs — kontrollü negatif", sets:4, reps:"8-10",
+    pose:"LYING_PRESS", equipment:"bar", primary:"Üst Göğüs", secondary:"Ön Omuz, Triceps",
+    tempo:"3-1-1-0", dur:"2.4s",
+    mistake:"Barı çok hızlı indirip sıçratarak kaldırma — göğüste kontrol kaybolur, omuz riski artar.",
+    cue:"Barı göğsün üst kısmına 3 saniyede indir, 1 saniye dur, patlayıcı şekilde it.",
+    warmup:"Boş bar x10 → %50 ağırlık x8 → %70 ağırlık x5 → %85 ağırlık x2-3 → çalışma seti."
+  },
+  "flat-dumbbell-press": {
+    name:"Flat Dumbbell Press", note:"Full ROM, stretch pozisyonda dur", sets:3, reps:"8-10",
+    pose:"LYING_PRESS", equipment:"dumbbell", primary:"Orta Göğüs", secondary:"Triceps, Ön Omuz",
+    tempo:"3-1-1-0", dur:"2.4s",
+    mistake:"Dumbbell'ları yarım yoldan geri kaldırma — alt göğüs stretch'i kayboluyor.",
+    cue:"Dirsekler göğüs hizasının biraz altına inene kadar tam indir."
+  },
+  "cable-fly-low-high": {
+    name:"Cable Fly (Low to High)", note:"Üst göğüs — squeeze odaklı", sets:3, reps:"12-15",
+    pose:"LYING_PRESS", equipment:"cable", primary:"Üst Göğüs", secondary:"Ön Omuz",
+    tempo:"2-1-2-1", dur:"2.0s",
+    mistake:"Hareketi sadece omuzdan yapıp dirsek bükme — kabloyu kolla değil göğüsle sık.",
+    cue:"Tepe noktada 1 saniye sık, göğüs kaslarını aktif tut."
+  },
+  "seated-db-ohp": {
+    name:"Seated Dumbbell OHP", note:"Omuz ön bölgesi", sets:4, reps:"8-10",
+    pose:"PRESS_OVERHEAD", equipment:"dumbbell", primary:"Ön Omuz", secondary:"Triceps, Yan Omuz",
+    tempo:"2-0-1-1", dur:"1.8s",
+    mistake:"Belde aşırı kavis yaparak ağırlığı kaldırmaya çalışmak — bel yerine omuz çalışmalı.",
+    cue:"Sırtı sandalyeye sabit bas, dirsekleri tam kilitlemeden bitir."
+  },
+  "cable-lateral-raise": {
+    name:"Cable Lateral Raise", note:"Tek tek — yan omuz izolasyon", sets:4, reps:"15-20",
+    pose:"LATERAL_RAISE", equipment:"cable", primary:"Yan Omuz (Lateral Delt)", secondary:"-",
+    tempo:"2-1-1-0", dur:"1.6s",
+    mistake:"Ağırlığı kaldırmak için trapezi (üst sırt) kullanıp omuzları yukarı çekme.",
+    cue:"Omuzları aşağıda sabit tut, hareketi sadece kol açısından üret."
+  },
+  "tricep-rope-pushdown": {
+    name:"Tricep Rope Pushdown", note:"Tam uzatma, sıkıştır", sets:3, reps:"12-15",
+    pose:"STANDING_CURL", equipment:"cable", primary:"Triceps", secondary:"-",
+    tempo:"1-1-2-1", dur:"1.4s", reverse:true,
+    mistake:"Dirsekleri öne doğru kaçırarak gövdeden uzaklaştırma — izolasyon kayboluyor.",
+    cue:"Dirsekleri kaburgalara yapışık tut, sadece önkol hareket etsin."
+  },
+  "overhead-tricep-extension": {
+    name:"Overhead Tricep Extension", note:"Long head odaklı", sets:4, reps:"10-12",
+    pose:"PRESS_OVERHEAD", equipment:"dumbbell", primary:"Triceps (Long Head)", secondary:"-",
+    tempo:"3-1-1-0", dur:"2.0s",
+    mistake:"Dirsekleri dışa açarak omuzu yormak — dirsekler kafanın yanında sabit kalmalı.",
+    cue:"Sadece önkolu hareket ettir, üst kol sabit ve dik dursun."
+  },
+
+  // ---------- TUESDAY — PULL (Back/Rear Delt/Biceps) ----------
+  "wide-grip-lat-pulldown": {
+    name:"Wide Grip Lat Pulldown", note:"Pull-up alternatifi — benzer lat aktivasyonu", sets:4, reps:"6-8",
+    pose:"PULLDOWN_SEATED", equipment:"bar", primary:"Lat (Sırt Genişliği)", secondary:"Biceps",
+    tempo:"1-1-3-1", dur:"2.0s",
+    mistake:"Gövdeyi geriye yatırıp ağırlığı momentumla çekme — sırtın izole çalışması engellenir.",
+    cue:"Göğsü dışarı çıkar, barı köprücük kemiğine indirirken kürek kemiklerini sık.",
+    progression:"Vücut ağırlığınla 6+ temiz pull-up çekebiliyorsan, bu hareketi haftanın bazı günlerinde gerçek Pull-up ile değiştir — sırt genişliği için daha yüksek transfer değeri var."
+  },
+  "bent-over-barbell-row": {
+    name:"Bent Over Barbell Row", note:"45° açı, göğüse çek", sets:4, reps:"6-8",
+    pose:"ROW_BENT", equipment:"bar", primary:"Üst-Orta Sırt", secondary:"Biceps, Arka Omuz",
+    tempo:"2-1-2-1", dur:"1.8s",
+    mistake:"Sırtı yuvarlayarak (kamburlaştırarak) ağırlık çekmek — bel yaralanması riski yüksek.",
+    cue:"Bel doğal kavisini koru, barı göbeğe doğru çek, kürekleri sıkıştır.",
+    warmup:"Boş bar x10 → %50 ağırlık x8 → %70 ağırlık x5 → çalışma seti."
+  },
+  "single-arm-db-row": {
+    name:"Single Arm DB Row", note:"Full ROM, kalça döndürme", sets:3, reps:"10-12",
+    pose:"ROW_BENT", equipment:"dumbbell", primary:"Lat, Orta Sırt", secondary:"Biceps",
+    tempo:"2-1-2-1", dur:"1.8s",
+    mistake:"Gövdeyi ağırlıkla birlikte döndürmek — torsoyu sabit tutup sadece kolu hareket ettir.",
+    cue:"Dirseği yukarı ve geriye çek, tepe noktada sık ve 1 saniye tut."
+  },
+  "face-pull-rope": {
+    name:"Face Pull (Rope)", note:"Arka omuz + rotator cuff sağlığı", sets:4, reps:"15-20",
+    pose:"REAR_DELT", equipment:"cable", primary:"Arka Omuz (Rear Delt)", secondary:"Rotator Cuff, Trapez",
+    tempo:"1-1-2-1", dur:"1.6s",
+    mistake:"Kabloyu sadece kollarla çekmek — dirsekleri yüksek tutup omuz arkasını çalıştırmak gerekir.",
+    cue:"İpi yüze doğru çek, dirsekleri omuz hizasının üstünde tut."
+  },
+  "reverse-pec-deck": {
+    name:"Reverse Pec Deck", note:"Arka omuz izolasyon", sets:3, reps:"12-15",
+    pose:"REAR_DELT", equipment:"machine", primary:"Arka Omuz", secondary:"Üst Sırt",
+    tempo:"2-1-2-1", dur:"1.6s",
+    mistake:"Hareketi çok hızlı ve kısa ROM ile yapmak — kollar tam açılmadan geri dönülüyor.",
+    cue:"Kolları geriye doğru tam açıp kürek kemiklerini birbirine yaklaştır."
+  },
+  "incline-db-curl": {
+    name:"Incline DB Curl", note:"Long head stretch, yavaş negatif", sets:3, reps:"10-12",
+    pose:"STANDING_CURL", equipment:"dumbbell", primary:"Biceps (Long Head)", secondary:"Önkol",
+    tempo:"3-1-1-0", dur:"1.8s",
+    mistake:"Dirsekleri öne savurarak momentum kazanmak — sırt eğikken kol sabit kalmalı.",
+    cue:"İniş fazında 3 saniye say, biceps tam strech pozisyonuna gelsin."
+  },
+  "hammer-curl": {
+    name:"Hammer Curl", note:"Brachialis + önkol", sets:3, reps:"12-15",
+    pose:"STANDING_CURL", equipment:"dumbbell", primary:"Brachialis, Önkol", secondary:"Biceps",
+    tempo:"2-1-1-0", dur:"1.6s",
+    mistake:"Bilek pozisyonunu değiştirip rotasyon yapmak — kavrama nötr (başparmak yukarı) kalmalı.",
+    cue:"Dumbbell'ı dik tutarak kaldır, dirsek sabit, sadece önkol döner."
+  },
+
+  // ---------- WEDNESDAY — LEGS ----------
+  "barbell-back-squat": {
+    name:"Barbell Back Squat", note:"High bar, full depth", sets:4, reps:"6-8",
+    pose:"SQUAT", equipment:"bar", primary:"Quadriceps, Glute", secondary:"Hamstring, Core",
+    tempo:"2-1-1-0", dur:"2.4s",
+    mistake:"Dizleri içe çökertmek (knee valgus) ve topukları yerden kaldırmak.",
+    cue:"Dizler ayak parmak ucu yönünü takip etsin, ağırlığı topuklarda hisset.",
+    warmup:"Boş bar x10 → %50 ağırlık x8 → %70 ağırlık x5 → %85 ağırlık x2-3 → çalışma seti."
+  },
+  "romanian-deadlift": {
+    name:"Romanian Deadlift", note:"Hamstring stretch, hafif diz bükümü", sets:3, reps:"8-10",
+    pose:"HINGE_DEADLIFT", equipment:"bar", primary:"Hamstring, Glute", secondary:"Alt Sırt",
+    tempo:"3-1-1-0", dur:"2.2s",
+    mistake:"Sırtı yuvarlamak ve dizleri çok bükerek squat'a dönüştürmek.",
+    cue:"Kalçayı geriye it, bar bacaklara yakın kalsın, sırt düz.",
+    warmup:"Boş bar x10 → %60 ağırlık x6 → %80 ağırlık x3 → çalışma seti."
+  },
+  "leg-press": {
+    name:"Leg Press", note:"Geniş basım, quad vurgu", sets:3, reps:"10-12",
+    pose:"LEG_PRESS", equipment:"machine", primary:"Quadriceps", secondary:"Glute, Hamstring",
+    tempo:"2-1-1-0", dur:"2.2s",
+    mistake:"Dizleri tam kilitleyerek üst noktada kilitlenmek — eklem üzerinde gereksiz yük.",
+    cue:"Dizleri hafif bükük bitir, alt noktada 90° altına inmeden kontrolü kaybetme."
+  },
+  "leg-curl-lying": {
+    name:"Leg Curl (Lying)", note:"Hamstring izolasyon", sets:3, reps:"12-15",
+    pose:"LEG_CURL_PRONE", equipment:"machine", primary:"Hamstring", secondary:"-",
+    tempo:"1-1-2-1", dur:"1.6s",
+    mistake:"Kalçayı yastıktan kaldırarak momentum yaratmak.",
+    cue:"Kalça sabit, sadece baldır yukarı kıvrılsın, tepede sık."
+  },
+  "leg-extension": {
+    name:"Leg Extension", note:"Quad finisher — tam uzatma", sets:4, reps:"12-15",
+    pose:"LEG_EXTENSION_SEATED", equipment:"machine", primary:"Quadriceps", secondary:"-",
+    tempo:"1-1-2-1", dur:"1.6s",
+    mistake:"Hareketi çok hızlı sıçratarak yapmak ve tepe noktada durmamak.",
+    cue:"Tepe noktada bacağı tam uzat ve 1 saniye sık, sonra kontrollü indir."
+  },
+  "standing-calf-raise": {
+    name:"Standing Calf Raise", note:"Dolu ROM, en üstte 1sn tut", sets:5, reps:"15-20",
+    pose:"CALF_RAISE", equipment:"machine", primary:"Gastrocnemius (Baldır)", secondary:"Soleus",
+    tempo:"2-1-2-1", dur:"1.4s",
+    mistake:"Çok kısa ROM ile zıplar gibi hızlı tekrar yapmak.",
+    cue:"Alt noktada topukları iyice indir, üstte parmak ucunda 1 saniye sık."
+  },
+  "cable-hip-thrust": {
+    name:"Cable/Machine Hip Thrust", note:"Glute izolasyonu — tepe sıkışı", sets:3, reps:"10-12",
+    pose:"LEG_PRESS", equipment:"machine", primary:"Glute Maximus", secondary:"Hamstring",
+    tempo:"2-1-2-1", dur:"2.0s",
+    mistake:"Belden hareket çalışmak — kalçayı tavana doğru itip belde aşırı kavis yaratmak.",
+    cue:"Tepe noktada kalçayı tam sık, 1 saniye tut, belin nötr pozisyonunu koru."
+  },
+
+  // ---------- THURSDAY — PUSH 2 ----------
+  "flat-barbell-bench-press": {
+    name:"Flat Barbell Bench Press", note:"Compound güç hareketi", sets:4, reps:"5-6",
+    pose:"LYING_PRESS", equipment:"bar", primary:"Orta Göğüs", secondary:"Triceps, Ön Omuz",
+    tempo:"3-1-1-0", dur:"2.6s",
+    mistake:"Kalçayı bankın üstünden kaldırarak (hip thrust) ekstra leverage kazanmak.",
+    cue:"Ayakları yere sabitle, kalça bankta sabit kalsın, barı kontrollü indir.",
+    warmup:"Boş bar x10 → %50 ağırlık x8 → %70 ağırlık x5 → %85 ağırlık x2-3 → çalışma seti."
+  },
+  "incline-db-fly": {
+    name:"Incline DB Fly", note:"Göğüs stretch odaklı", sets:3, reps:"12-15",
+    pose:"LYING_PRESS", equipment:"dumbbell", primary:"Üst Göğüs", secondary:"Ön Omuz",
+    tempo:"3-1-1-1", dur:"2.2s",
+    mistake:"Dirsekleri tam kilitleyip hareketi triceps'e kaydırmak.",
+    cue:"Dirseklerde hafif kıvrım koru, hareketi göğüsten başlat ve bitir."
+  },
+  "cable-crossover": {
+    name:"Cable Crossover", note:"Alt göğüs tanımı", sets:2, reps:"15",
+    pose:"STANDING_FLY", equipment:"cable", primary:"Alt-Orta Göğüs", secondary:"Ön Omuz",
+    tempo:"2-1-2-1", dur:"1.8s",
+    mistake:"Kolları sadece omuzdan değil dirsekten bükerek triceps pushdown'a benzetmek.",
+    cue:"Kolları düz tutarak kavisli bir yol çizip karın altında kavuştur."
+  },
+  "lateral-raise-db": {
+    name:"Lateral Raise (DB)", note:"3 açı: önden, yandan, geriden", sets:5, reps:"15-20",
+    pose:"LATERAL_RAISE", equipment:"dumbbell", primary:"Yan Omuz", secondary:"Ön/Arka Omuz",
+    tempo:"2-1-1-0", dur:"1.6s",
+    mistake:"Ağırlığı çok yukarı (omuz hizasının üstüne) kaldırıp trapezi devreye sokmak.",
+    cue:"Kolları omuz hizasına kadar kaldır, hafif öne açılı tut."
+  },
+  "arnold-press": {
+    name:"Arnold Press", note:"3 omuz başı aktivasyonu", sets:3, reps:"10-12",
+    pose:"PRESS_OVERHEAD", equipment:"dumbbell", primary:"Tüm Omuz (3 Baş)", secondary:"Triceps",
+    tempo:"2-1-2-0", dur:"2.0s",
+    mistake:"Rotasyon fazını atlayıp düz bir OHP'ye dönüştürmek.",
+    cue:"Alt pozisyonda avuç içi sana dönük başla, kaldırırken dışa rotasyon yap."
+  },
+  "skull-crusher-ez": {
+    name:"Skull Crusher (EZ Bar)", note:"Triceps long head", sets:4, reps:"10-12",
+    pose:"LYING_PRESS", equipment:"bar", primary:"Triceps (Long Head)", secondary:"-",
+    tempo:"3-1-1-0", dur:"2.0s",
+    mistake:"Dirsekleri açarak barı alına değil göğse doğru indirmek.",
+    cue:"Dirsekler sabit ve dik, bar alna doğru iner, sadece önkol hareket eder."
+  },
+  "pec-deck-fly": {
+    name:"Pec Deck Fly (Machine)", note:"Göğüs izolasyon — peak squeeze", sets:3, reps:"12-15",
+    pose:"STANDING_FLY", equipment:"machine", primary:"Orta Göğüs", secondary:"Ön Omuz",
+    tempo:"2-1-2-1", dur:"1.8s",
+    mistake:"Dirsekleri tam kilitleyerek hareketi triceps'e kaydırmak.",
+    cue:"Dirsekler hafif bükük, tepe noktada 1 saniye sık ve kontrollü aç."
+  },
+
+  // ---------- FRIDAY — PULL 2 ----------
+  "conventional-deadlift": {
+    name:"Conventional Deadlift", note:"Ağırlık günü — 85%+ 1RM", sets:4, reps:"4-5",
+    pose:"HINGE_DEADLIFT", equipment:"bar", primary:"Sırt, Glute, Hamstring", secondary:"Core, Trapez",
+    tempo:"1-0-1-0", dur:"2.0s",
+    mistake:"Bar gövdeden uzaklaşarak kalkış yapmak — bel üzerinde aşırı moment kolu oluşur.",
+    cue:"Bar baldırlara yakın kalsın, kalkışta göğsü yukarı, sırtı düz tut.",
+    warmup:"Boş bar x10 → %50 ağırlık x5 → %70 ağırlık x3 → %85 ağırlık x2 → çalışma seti. Ağır gün olduğu için ısınmaya normalden fazla zaman ayır."
+  },
+  "lat-pulldown-wide": {
+    name:"Lat Pulldown (Wide Grip)", note:"Lat genişliği için", sets:4, reps:"8-10",
+    pose:"PULLDOWN_SEATED", equipment:"bar", primary:"Lat", secondary:"Biceps, Orta Sırt",
+    tempo:"1-1-3-1", dur:"2.0s",
+    mistake:"Sadece kollarla çekip sırtı devreye sokmamak.",
+    cue:"Önce kürek kemiklerini aşağı-geri çek, sonra kollarla tamamla.",
+    progression:"Bu seansta Salı'dan farklı olarak gerçek Pull-up denemek için iyi bir gün — vücut ağırlığı hareketleri sırt genişliğine makineden daha fazla katkı sağlar."
+  },
+  "seated-cable-row-close": {
+    name:"Seated Cable Row (Close Grip)", note:"Sırt kalınlığı", sets:4, reps:"10-12",
+    pose:"ROW_BENT", equipment:"cable", primary:"Orta Sırt", secondary:"Biceps, Lat",
+    tempo:"2-1-2-1", dur:"1.8s",
+    mistake:"Gövdeyi aşırı geriye yatırarak momentum yaratmak.",
+    cue:"Gövdeyi sabit tut, kürek kemiklerini sıkarak kabloyu karına çek."
+  },
+  "straight-arm-pulldown": {
+    name:"Straight Arm Pulldown", note:"Lat aktivasyon — squeeze odaklı", sets:4, reps:"12-15",
+    pose:"REAR_DELT", equipment:"cable", primary:"Lat", secondary:"Triceps (uzun baş)",
+    tempo:"2-1-2-1", dur:"1.8s",
+    mistake:"Dirsekleri bükerek hareketi triceps pushdown'a çevirmek.",
+    cue:"Kollar boyunca düz kalsın, hareket sadece omuzdan üretilsin."
+  },
+  "ez-bar-curl": {
+    name:"EZ Bar Curl", note:"Biceps mass", sets:4, reps:"8-10",
+    pose:"STANDING_CURL", equipment:"bar", primary:"Biceps", secondary:"Önkol",
+    tempo:"2-1-2-0", dur:"1.8s",
+    mistake:"Gövdeyi öne-arkaya sallayarak ağırlığı kaldırmaya yardım etmek.",
+    cue:"Dirsekler gövdeye sabit, sadece önkol hareket etsin, sırt dik."
+  },
+  "cable-curl-isolation": {
+    name:"Cable Curl (İzolasyon)", note:"Peak squeeze", sets:3, reps:"12-15",
+    pose:"STANDING_CURL", equipment:"cable", primary:"Biceps", secondary:"-",
+    tempo:"1-1-2-1", dur:"1.6s",
+    mistake:"Tepe noktada sıkmadan hemen geri bırakmak.",
+    cue:"Tam kıvrımda 1 saniye sık, biceps'i maksimum kasarak hisset."
+  },
+
+  // ---------- SATURDAY — UPPER SPEC ----------
+  "machine-lateral-raise": {
+    name:"Machine Lateral Raise", note:"Yan omuz önceliği", sets:4, reps:"15-20",
+    pose:"LATERAL_RAISE", equipment:"machine", primary:"Yan Omuz", secondary:"-",
+    tempo:"2-1-1-0", dur:"1.6s",
+    mistake:"Sırtı koltuktan kaldırıp gövdeyle yardım etmek.",
+    cue:"Sırt sabit, omuzları aşağıda tutarak sadece kolları kaldır."
+  },
+  "chest-supported-tbar-row": {
+    name:"Chest Supported T-Bar Row", note:"Sırt kalınlığı", sets:4, reps:"8-10",
+    pose:"ROW_BENT", equipment:"bar", primary:"Orta Sırt", secondary:"Lat, Biceps",
+    tempo:"2-1-2-1", dur:"1.8s",
+    mistake:"Boynu öne uzatarak hareketi tamamlamaya çalışmak.",
+    cue:"Göğüs pad'e sabit, kürek kemiklerini sıkarak çek."
+  },
+  "machine-pullover": {
+    name:"Machine Pullover", note:"Lat izolasyonu", sets:3, reps:"12-15",
+    pose:"PULLOVER_LYING", equipment:"machine", primary:"Lat", secondary:"Triceps (uzun baş)",
+    tempo:"2-1-2-1", dur:"1.8s",
+    mistake:"Hareketi sadece üst sırt ile yapıp lat gerimini kaybetmek.",
+    cue:"Kollar boyunca düz, hareketi koltuk altından başlat."
+  },
+  "rear-delt-fly": {
+    name:"Rear Delt Fly", note:"Arka omuz", sets:4, reps:"15",
+    pose:"REAR_DELT", equipment:"dumbbell", primary:"Arka Omuz", secondary:"Üst Sırt",
+    tempo:"2-1-1-0", dur:"1.6s",
+    mistake:"Gövdeyi dikleştirip hareketi yan omuza kaydırmak.",
+    cue:"Gövdeyi öne eğik tut, kolları yana açarken kürek kemiklerini sık."
+  },
+  "cable-crunch": {
+    name:"Cable Crunch", note:"Ağırlıklı karın", sets:4, reps:"15-20",
+    pose:"CORE_CRUNCH", equipment:"cable", primary:"Rectus Abdominis (Karın)", secondary:"-",
+    tempo:"1-1-2-1", dur:"1.6s",
+    mistake:"Hareketi kalçadan değil sadece omuzdan yaparak karın aktivasyonunu kaybetmek.",
+    cue:"Dirsekleri dizlere değil, göbeği omurgaya doğru kıvır."
+  },
+  "weighted-plank": {
+    name:"Weighted Plank", note:"Core stabilitesi", sets:3, reps:"45-60 sn", isHold:true,
+    pose:"PLANK_HOLD", equipment:"none", primary:"Core (Tüm Karın Bölgesi)", secondary:"Omuz, Sırt",
+    tempo:"İzometrik tutuş", dur:"1.4s",
+    mistake:"Kalçayı yukarı kaldırmak veya belin çökmesine izin vermek.",
+    cue:"Vücut baştan ayağa düz bir hat oluştursun, göbeği içe çek."
+  },
+
+  // ---------- SUNDAY — ACTIVE REST ----------
+  "walk-liss": {
+    name:"30-45 dk Yürüyüş", note:"Düşük yoğunluklu kardio (LISS)", sets:"—", reps:"Opsiyonel",
+    pose:"WALK_CYCLE", equipment:"none", primary:"Genel / Kardiyovasküler", secondary:"Bacak",
+    tempo:"Sabit tempo", dur:"0.9s",
+    mistake:"Çok yüksek tempoda yürüyüp LISS'in amacını (düşük nabız) kaybetmek.",
+    cue:"Nabzı 120-140 bpm aralığında tut, konuşabilecek rahatlıkta yürü."
+  },
+  "full-body-stretch": {
+    name:"Full Body Stretching", note:"Her kas grubu 30sn+", sets:"—", reps:"15-20 dk",
+    pose:"STRETCH_POSE", equipment:"none", primary:"Tüm Kas Grupları", secondary:"-",
+    tempo:"Statik tutuş", dur:"2.4s",
+    mistake:"Esnemeyi sıçratarak (ballistic) yapmak — yavaş ve kontrollü olmalı.",
+    cue:"Her pozisyonda nefes al, gerginlik hissettiğin noktada 30 saniye sabit kal."
+  },
+  "foam-rolling": {
+    name:"Foam Rolling", note:"Sırt, quad, lat odaklı", sets:"—", reps:"10 dk",
+    pose:"FOAM_ROLL", equipment:"none", primary:"Fasya / Kas Toparlanması", secondary:"-",
+    tempo:"Yavaş geçişler", dur:"1.8s",
+    mistake:"Aynı noktada çok hızlı ileri-geri gidip dokuyu rahatlatmak için yeterli zaman vermemek.",
+    cue:"Gergin noktada yavaşla, o bölgede 20-30 saniye baskı uygula."
+  }
+};
+
+</script>
+<script>
+/* ============================================================
+   HAFTALIK PROGRAM YAPISI
+   ============================================================ */
+
+const WEEK_DAYS = [
+  {
+    key: "mon", name: "Pazartesi", muscle: "Göğüs · Ön Omuz · Triceps",
+    tag: "Push", tagClass: "push", dotColor: null,
+    exercises: ["incline-barbell-press","seated-db-ohp","flat-dumbbell-press",
+      "cable-fly-low-high","cable-lateral-raise","tricep-rope-pushdown","overhead-tricep-extension"]
+  },
+  {
+    key: "tue", name: "Salı", muscle: "Sırt · Arka Omuz · Biceps",
+    tag: "Pull", tagClass: "pull", dotColor: "var(--green)",
+    exercises: ["wide-grip-lat-pulldown","bent-over-barbell-row","single-arm-db-row",
+      "face-pull-rope","reverse-pec-deck","incline-db-curl","hammer-curl"]
+  },
+  {
+    key: "wed", name: "Çarşamba", muscle: "Quad · Hamstring · Glute · Calf",
+    tag: "Legs", tagClass: "legs", dotColor: "var(--accent2)",
+    exercises: ["barbell-back-squat","romanian-deadlift","leg-press",
+      "leg-curl-lying","leg-extension","cable-hip-thrust","standing-calf-raise"]
+  },
+  {
+    key: "thu", name: "Perşembe", muscle: "Göğüs · Omuz · Triceps — P2",
+    tag: "Push 2", tagClass: "push", dotColor: null,
+    exercises: ["flat-barbell-bench-press","incline-db-fly","cable-crossover","pec-deck-fly",
+      "lateral-raise-db","arnold-press","skull-crusher-ez"]
+  },
+  {
+    key: "fri", name: "Cuma", muscle: "Deadlift · Sırt · Biceps — P2",
+    tag: "Pull 2", tagClass: "pull", dotColor: "var(--green)",
+    exercises: ["conventional-deadlift","lat-pulldown-wide","seated-cable-row-close",
+      "straight-arm-pulldown","ez-bar-curl","cable-curl-isolation"]
+  },
+  {
+    key: "sat", name: "Cumartesi", muscle: "Omuz + Sırt Genişliği + Core",
+    tag: "Upper Spec", tagClass: "pull", dotColor: "var(--accent2)",
+    exercises: ["machine-lateral-raise","chest-supported-tbar-row","machine-pullover",
+      "rear-delt-fly","cable-crunch","weighted-plank"]
+  },
+  {
+    key: "sun", name: "Pazar", muscle: "Aktif dinlenme · Esneme · Yürüyüş",
+    tag: "Rest", tagClass: "rest-tag", dotColor: null, isRest: true,
+    exercises: ["walk-liss","full-body-stretch","foam-rolling"]
+  }
+];
+
+// JS getDay(): 0=Pazar,1=Pazartesi... -> map to WEEK_DAYS index
+const JSDAY_TO_INDEX = [6,0,1,2,3,4,5];
+
+</script>
+<script>
+/* ============================================================
+   UI BUILDER — günleri ve egzersizleri DOM'a basar,
+   modal açar, set tamamlama state'ini in-memory tutar.
+   ============================================================ */
+
+// In-memory state: { "mon:incline-barbell-press": [true,false,false,false], ... }
+const STATE = {};
+
+function getSetState(dayKey, exId, totalSets){
+  const k = dayKey + ":" + exId;
+  if (!STATE[k]) STATE[k] = new Array(typeof totalSets === "number" ? totalSets : 1).fill(false);
+  return STATE[k];
+}
+
+function countDayProgress(day){
+  let doneSets = 0, totalSets = 0;
+  day.exercises.forEach(exId => {
+    const ex = EXDB[exId];
+    const n = typeof ex.sets === "number" ? ex.sets : 1;
+    totalSets += n;
+    const s = getSetState(day.key, exId, n);
+    doneSets += s.filter(Boolean).length;
+  });
+  return {doneSets, totalSets};
+}
+
+function buildMiniIcon(ex){
+  const fn = POSES[ex.pose];
+  if (!fn) return "";
+  const cfg = {dur: ex.dur || "1.8s", equipment: ex.equipment, reverse: ex.reverse};
+  try { return fn(cfg); } catch(e){ console.error("pose render fail", ex.name, e); return ""; }
+}
+
+function exerciseRowHTML(dayKey, exId){
+  const ex = EXDB[exId];
+  const totalSets = typeof ex.sets === "number" ? ex.sets : 1;
+  const s = getSetState(dayKey, exId, totalSets);
+  const allDone = s.every(Boolean) && s.length > 0;
+  return `
+    <div class="exercise-row ${allDone ? 'done' : ''}" data-day="${dayKey}" data-ex="${exId}" onclick="openExerciseModal('${dayKey}','${exId}')">
+      <div class="ex-row-main">
+        <div class="ex-mini-icon">${buildMiniIcon(ex)}</div>
+        <div>
+          <div class="ex-name">${ex.name}</div>
+          <div class="ex-note">${ex.note}</div>
+        </div>
+        <div style="text-align:right">
+          <div class="ex-sets">${ex.sets} ${typeof ex.sets === 'number' ? 'set' : ''}</div>
+          <div class="ex-reps">${ex.reps}</div>
+        </div>
+        <div class="ex-check">${allDone ? '✓' : ''}</div>
+      </div>
+    </div>`;
+}
+
+function dayCardHTML(day, isToday){
+  const {doneSets, totalSets} = countDayProgress(day);
+  const pct = totalSets ? Math.round((doneSets/totalSets)*100) : 0;
+  const dotStyle = day.dotColor ? `style="background:${day.dotColor}"` : (day.isRest ? 'class="day-dot rest"' : '');
+  return `
+    <div class="day-card" id="daycard-${day.key}" data-day="${day.key}">
+      <div class="day-header" onclick="toggleDay(this)">
+        <div class="day-left">
+          <div class="day-dot" ${dotStyle}></div>
+          <div>
+            <div class="day-name">${day.name}${isToday ? ' <span style="color:var(--accent);font-size:10px;">• BUGÜN</span>' : ''}</div>
+            <div class="day-muscle">${day.muscle}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span class="day-tag ${day.tagClass}">${day.tag}</span>
+          <span class="chevron">▼</span>
+        </div>
+      </div>
+      <div class="day-body${isToday ? ' open' : ''}">
+        <div class="day-progress-wrap">
+          <div class="day-progress-track"><div class="day-progress-fill" id="dayprog-${day.key}" style="width:${pct}%"></div></div>
+          <div class="day-progress-label"><span>İlerleme</span><span id="dayprogtxt-${day.key}">${doneSets}/${totalSets} set</span></div>
+        </div>
+        ${day.exercises.map(exId => exerciseRowHTML(day.key, exId)).join("")}
+      </div>
+    </div>`;
+}
+
+function refreshDayProgress(dayKey){
+  const day = WEEK_DAYS.find(d => d.key === dayKey);
+  const {doneSets, totalSets} = countDayProgress(day);
+  const pct = totalSets ? Math.round((doneSets/totalSets)*100) : 0;
+  const fill = document.getElementById('dayprog-'+dayKey);
+  const txt = document.getElementById('dayprogtxt-'+dayKey);
+  if (fill) fill.style.width = pct + '%';
+  if (txt) txt.textContent = doneSets + '/' + totalSets + ' set';
+}
+
+function refreshExerciseRow(dayKey, exId){
+  const ex = EXDB[exId];
+  const totalSets = typeof ex.sets === "number" ? ex.sets : 1;
+  const s = getSetState(dayKey, exId, totalSets);
+  const allDone = s.every(Boolean) && s.length > 0;
+  const row = document.querySelector(`.exercise-row[data-day="${dayKey}"][data-ex="${exId}"]`);
+  if (row){
+    row.classList.toggle('done', allDone);
+    row.querySelector('.ex-check').textContent = allDone ? '✓' : '';
+  }
+  refreshDayProgress(dayKey);
+}
+
+// ---------------- MODAL ----------------
+let currentModalCtx = null;
+
+function muscleTagsHTML(ex){
+  let html = `<span class="muscle-tag primary">🎯 ${ex.primary}</span>`;
+  if (ex.secondary && ex.secondary !== "-"){
+    ex.secondary.split(",").forEach(m => {
+      html += `<span class="muscle-tag secondary">${m.trim()}</span>`;
+    });
+  }
+  return html;
+}
+
+function tempoChipsHTML(ex){
+  if (ex.tempo === "İzometrik tutuş" || ex.tempo === "Statik tutuş" || ex.tempo === "Sabit tempo" || ex.tempo === "Yavaş geçişler"){
+    return `<div class="cue-card"><span class="cue-icon">⏱️</span><span>${ex.tempo} — bu hareket sabit pozisyon/tempo gerektirir, klasik 4 fazlı tempo uygulanmaz.</span></div>`;
+  }
+  const parts = ex.tempo.split("-");
+  const labels = ["Eksantrik (iniş)","Alt Duraklama","Konsantrik (kalkış)","Üst Duraklama"];
+  return `<div class="tempo-row">${parts.map((p,i)=>`
+    <div class="tempo-chip"><div class="tempo-chip-val">${p}″</div><div class="tempo-chip-label">${labels[i]}</div></div>
+  `).join("")}</div>`;
+}
+
+function speedDotsHTML(){
+  return `<div class="speed-dots">${[0,1,2].map(i=>`<span class="speed-dot ${i===1?'active':''}"></span>`).join("")}</div>`;
+}
+
+function setPillsHTML(dayKey, exId){
+  const ex = EXDB[exId];
+  if (typeof ex.sets !== "number"){
+    return `<div class="cue-card"><span class="cue-icon">✓</span><span>Bu aktivite süre bazlıdır — set takibi gerekmez. Tamamladığında aşağıdaki butona dokun.</span></div>`;
+  }
+  const s = getSetState(dayKey, exId, ex.sets);
+  return `<div class="set-pills">${s.map((done,i)=>`
+    <div class="set-pill ${done?'complete':''}" onclick="toggleSet('${dayKey}','${exId}',${i})">Set ${i+1}</div>
+  `).join("")}</div>`;
+}
+
+function overloadTextFor(ex){
+  if (typeof ex.sets !== "number" || ex.isHold){
+    return "Bu hareket süre/tutuş bazlı — ilerlemeyi süreyi uzatarak veya ek ağırlık ekleyerek sağla.";
+  }
+  const reps = ex.reps;
+  const match = reps.match(/(\d+)\s*-\s*(\d+)/);
+  if (!match){
+    return "Hareketi kontrollü tamamladığında bir sonraki antrenmanda ağırlığı küçük bir adım artır.";
+  }
+  const topRep = match[2];
+  return `${topRep} tekrara art üst üste 2 antrenmanda ulaşırsan, bir sonraki seansta ağırlığı %2-5 artır ve rep aralığının altından tekrar başla. Form bozulursa ağırlığı artırma, önce tekniği sabitle.`;
+}
+
+function renderModalStage(ex, speedMultiplier){
+  const fn = POSES[ex.pose];
+  const baseDur = parseFloat(ex.dur || "1.8");
+  const dur = (baseDur / speedMultiplier).toFixed(2) + "s";
+  const cfg = {dur, equipment: ex.equipment, reverse: ex.reverse};
+  return fn(cfg);
+}
+
+function openExerciseModal(dayKey, exId){
+  const ex = EXDB[exId];
+  currentModalCtx = {dayKey, exId, speed: 1};
+  const overlay = document.getElementById('exModalOverlay');
+  const isHold = ex.isHold;
+
+  document.getElementById('modalStageWrap').innerHTML = renderModalStage(ex, 1);
+  document.getElementById('modalExName').textContent = ex.name;
+  document.getElementById('modalExNote').textContent = ex.note;
+  document.getElementById('modalSetsVal').textContent = (typeof ex.sets === 'number' ? ex.sets + ' set' : ex.sets);
+  document.getElementById('modalRepsVal').textContent = ex.reps;
+  document.getElementById('muscleTags').innerHTML = muscleTagsHTML(ex);
+  const warmupSection = document.getElementById('warmupSection');
+  if (ex.warmup){
+    warmupSection.style.display = '';
+    document.getElementById('warmupText').textContent = ex.warmup;
+  } else {
+    warmupSection.style.display = 'none';
+  }
+  document.getElementById('tempoChips').innerHTML = tempoChipsHTML(ex);
+  document.getElementById('cueText').textContent = ex.cue;
+  document.getElementById('mistakeText').textContent = ex.mistake;
+  document.getElementById('setPillsWrap').innerHTML = setPillsHTML(dayKey, exId);
+  document.getElementById('speedDotsWrap').innerHTML = speedDotsHTML();
+  document.getElementById('overloadText').textContent = overloadTextFor(ex);
+  const progressionSection = document.getElementById('progressionSection');
+  if (ex.progression){
+    progressionSection.style.display = '';
+    document.getElementById('progressionText').textContent = ex.progression;
+  } else {
+    progressionSection.style.display = 'none';
+  }
+
+  updateDoneBtn();
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeExerciseModal(){
+  document.getElementById('exModalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  currentModalCtx = null;
+}
+
+function toggleSet(dayKey, exId, idx){
+  const ex = EXDB[exId];
+  const s = getSetState(dayKey, exId, ex.sets);
+  s[idx] = !s[idx];
+  document.getElementById('setPillsWrap').innerHTML = setPillsHTML(dayKey, exId);
+  refreshExerciseRow(dayKey, exId);
+  updateDoneBtn();
+}
+
+function updateDoneBtn(){
+  if (!currentModalCtx) return;
+  const {dayKey, exId} = currentModalCtx;
+  const ex = EXDB[exId];
+  const btn = document.getElementById('modalDoneBtn');
+  if (typeof ex.sets !== 'number'){
+    const s = getSetState(dayKey, exId, 1);
+    btn.textContent = s[0] ? '✓ Tamamlandı' : 'Tamamlandı Olarak İşaretle';
+    btn.classList.toggle('is-done', s[0]);
+    return;
+  }
+  const s = getSetState(dayKey, exId, ex.sets);
+  const allDone = s.every(Boolean);
+  btn.textContent = allDone ? '✓ Tüm Setler Tamamlandı' : 'Tüm Setleri Tamamla';
+  btn.classList.toggle('is-done', allDone);
+}
+
+function markAllSets(){
+  if (!currentModalCtx) return;
+  const {dayKey, exId} = currentModalCtx;
+  const ex = EXDB[exId];
+  const totalSets = typeof ex.sets === 'number' ? ex.sets : 1;
+  const s = getSetState(dayKey, exId, totalSets);
+  const allDone = s.every(Boolean);
+  for (let i=0;i<s.length;i++) s[i] = !allDone;
+  document.getElementById('setPillsWrap').innerHTML = setPillsHTML(dayKey, exId);
+  refreshExerciseRow(dayKey, exId);
+  updateDoneBtn();
+}
+
+function setModalSpeed(mult){
+  if (!currentModalCtx) return;
+  currentModalCtx.speed = mult;
+  const ex = EXDB[currentModalCtx.exId];
+  document.getElementById('modalStageWrap').innerHTML = renderModalStage(ex, mult);
+  document.querySelectorAll('.speed-btn').forEach(b => b.classList.toggle('active', parseFloat(b.dataset.mult) === mult));
+}
+
+// ---------------- INIT ----------------
+function toggleDay(header){
+  const body = header.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  header.classList.toggle('open', !isOpen);
+}
+
+function jumpToToday(){
+  const idx = JSDAY_TO_INDEX[new Date().getDay()];
+  const day = WEEK_DAYS[idx];
+  showTab('training');
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('.tab[data-tab="training"]').classList.add('active');
+  setTimeout(() => {
+    const card = document.getElementById('daycard-' + day.key);
+    if (card){
+      const header = card.querySelector('.day-header');
+      const body = card.querySelector('.day-body');
+      if (!body.classList.contains('open')) toggleDay(header);
+      card.scrollIntoView({behavior:'smooth', block:'start'});
+    }
+  }, 50);
+}
+
+function renderTrainingSection(){
+  const todayIdx = JSDAY_TO_INDEX[new Date().getDay()];
+  const container = document.getElementById('trainingDaysContainer');
+  container.innerHTML = WEEK_DAYS.map((day,i) => dayCardHTML(day, i === todayIdx)).join("");
+}
+
+function renderTodayBanner(){
+  const todayIdx = JSDAY_TO_INDEX[new Date().getDay()];
+  const day = WEEK_DAYS[todayIdx];
+  const el = document.getElementById('todayBanner');
+  el.innerHTML = `
+    <div class="today-banner-left">
+      <div class="today-banner-eyebrow">Bugün — ${day.name}</div>
+      <div class="today-banner-title">${day.isRest ? 'Aktif Dinlenme' : day.tag + ' Günü'}</div>
+      <div class="today-banner-sub">${day.muscle}</div>
+    </div>
+    <div class="today-banner-arrow">→</div>`;
+  el.onclick = jumpToToday;
+}
+
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderTodayBanner();
+  renderTrainingSection();
+
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      showTab(tab.dataset.tab);
+    });
+  });
+
+  document.getElementById('exModalOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'exModalOverlay') closeExerciseModal();
+  });
+});
+
+</script>
+
+
+<div class="tip-card">
+  <div class="tip-header">⭐ Cumartesi — V-Taper Specialization Day</div>
+  <div class="tip-text">
+    1. Machine Lateral Raise — 5 set (15-20)<br>
+    2. Chest Supported T-Bar Row — 4 set (8-10)<br>
+    3. Machine Pullover — 4 set (12-15)<br>
+    4. Rear Delt Fly — 4 set (15)<br>
+    5. Cable Crunch — 4 set (15-20)<br>
+    6. Hanging Leg Raise — 3 set (12-15)<br>
+    7. Weighted Plank — 3 set (45-60 sn)<br><br>
+    Toplam: 27 set
+  </div>
+</div>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
